@@ -49,7 +49,7 @@
                                 <label>نوع المستخدم <span class="tx-danger">*</span></label>
                                 {!! Form::select('roles[]', $roles,$userRole, array('class' => 'form-control','multiple'))
 
-                                                          !!}
+                                       !!}
                                 @error("roles_name")
                                 <span class="text-danger">{{ $message }} </span>
                                 @enderror

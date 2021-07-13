@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\UserRequest;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\User;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -48,25 +50,25 @@ class UserController extends Controller
         return view('Pages.Dashboard.User.Add__user', compact('roles'));
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //return $request;
-
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'roles_name' => $request->roles_name,
-            'Status' => $request->Status,
+            'status' => $request->Status,
         ]);
-
-
         $user->assignRole($request->input('roles_name'));
+
+
         toastr()->success('تمت عملية الاضافة بنجاح');
 
-        return redirect()->route('users.index')
-            ->with('success', 'تم اضافة المستخدم بنجاح');
+            return redirect()->route('users.index')
+                ->with('success', 'تم اضافة المستخدم بنجاح');
+
+
 
 
     }
@@ -89,15 +91,11 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'roles' => 'required'
-        ]);
+
         if (!$request->has('Status'))
-            $request->request->add(['Status' => 'غير مفعل']);
+            $request->request->add(['Status' => 1]);
         else
-            $request->request->add(['is_active' => 'مفعل']);
+            $request->request->add(['Status' => 0]);
         $input = $request->all();
 //        if (!empty($input['password'])) {
 //            $input['password'] = Hash::make($input['password']);

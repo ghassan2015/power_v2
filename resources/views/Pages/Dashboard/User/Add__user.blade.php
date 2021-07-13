@@ -17,7 +17,7 @@
 
             </div>
             <div class="card-body" style="text-align:right ">
-                <form class="form" action="{{route('users.store')}}" method="post">
+                <form class="form"  id="form" action="{{route('users.store')}}" method="post">
                     @csrf
                     <div class="card-body">
                         <div class="form-group row">
@@ -43,7 +43,7 @@
                                 <label>كلمة المرور :</label>
                                 <input type="password" name="password" class="form-control"
                                        placeholder="ادخل كلمة المرور الخاصة بالموظف  "/>
-                                @error("Name")
+                                @error("password")
                                 <span class="text-danger"> {{ $message }}</span>
                                 @enderror
                             </div>
@@ -51,8 +51,8 @@
                                 <label>تاكيد كلمة المرور:</label>
                                 <input type="password" class="form-control"
                                        placeholder="تاكيد كلمة المرور الخاص بالموظف"
-                                       id="password_confirmation" name="password_confirmation"/>
-                                @error("password_confirmation")
+                                       id="confirm-password" name="confirm-password"/>
+                                @error("confirm-password")
                                 <span class="text-danger"> {{ $message }}</span>
                                 @enderror
                             </div>
@@ -76,6 +76,7 @@
                                                                 class="switch switch-outline switch-icon switch-success">
 																<label>
 																	<input type="checkbox" checked="checked"
+                                                                          value="1"
                                                                            name="Status"/>
 																	<span></span>
 																</label>
@@ -101,3 +102,57 @@
 
 @endsection
 
+@section('js')
+<script>
+    $(document).ready(function () {
+        $('#form').validate({
+            errorClass: "error fail-alert",
+            validClass: "valid success-alert",
+            // initialize the plugin
+            rules: {
+                'name': {
+                    required: true
+                },
+                'email': {
+                    required: true,
+                },
+                'password': {
+                    required: true,
+                },
+                'password_confirmation': {
+                    required: true,
+
+                },
+                'roles_name[]': {
+                    required: true,
+
+                },
+
+
+                errorClass: "error fail-alert",
+                validClass: "valid success-alert",
+
+
+            }
+            , messages: {
+                'name': {
+                    required: "الرجاء ادخل الاسم"
+                },
+                'email': {
+                    required: "الرجاء ادخل الايميل"
+                },
+                'password': {
+                    required: "الرجاء ادخل كلمة المرور"
+                },
+                'password_confirmation': {
+                    required: "الرجاء ادخل كلمة المرور"
+                },
+                'roles_name[]': {
+                    required: "الرجاءادخل الصلاحية الموظف",
+                },
+            }
+
+        });
+    });
+</script>
+@endsection
