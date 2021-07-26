@@ -26,7 +26,6 @@
                     <thead>
                     <tr>
 
-                        <th width="2%">#</th>
                         <th width="10%">الاسم</th>
 
                         <th width="20%">العمليات</th>
@@ -227,7 +226,6 @@
                 ajax: "{{ route('Options.index') }}",
 
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
 

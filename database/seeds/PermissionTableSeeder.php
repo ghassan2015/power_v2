@@ -20,7 +20,7 @@ class PermissionTableSeeder extends Seeder
             'الصلاحيات',
             'الموظفين',
             'المشتركين',
-
+            'الاعدادات'
         ];
 
 

@@ -25,21 +25,25 @@
 
         </div>
 
-
+        <form action="{{route('Invoices.print_Invoice')}}" method="get">
+            @csrf
         <div class="form-group row m-1">
             <div class="col-lg-3 ">
                 <label>اسم المشترك:</label>
-                <input type="text"
-                       class="form-control current @error('Customer_id') is-invalid @enderror"
-                       placeholder="ادخل اسم المشترك" id="Customer_id"
-                       value=""
-                       name="Customer_id"/>
+                <select name="Customer_id" class="form-group row kt_select2_2"
+                        style="width: 100%"
+                        id="Customer_id">
+                    <option value=""> المشتركين</option>
+                    @foreach($Customers as $customer)
+                    <option value="{{$customer->id}}">{{$customer->full_name}}</option>
+                    @endforeach
+                </select>
                 @error("Customer_id")
                 <span class="text-danger"> {{ $message }}</span>
                 @enderror
             </div>
             <div class="col-lg-3 ">
-                <label>قيمة العدادالحالية :</label>
+                <label> الشهر :</label>
                 <select name="Month_Invoice" class="form-group row kt_select2_2"
                         style="width: 100%" id="Month">
                     <option value="">كل الاشهر</option>
@@ -62,7 +66,7 @@
                 @enderror
             </div>
             <div class="col-lg-3 ">
-                <label>قيمة العدادالحالية :</label>
+                <label>السنة :</label>
                 <select name="years" class="form-group row kt_select2_2"
                         style="width: 100%"
                         id="years">
@@ -78,9 +82,8 @@
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
-
-                        <div class="col-lg-3 ">
-                            <label>قيمة العدادالحالية :</label>
+            <div class="col-lg-3 ">
+                            <label>الحالة :</label>
                             <select name="Status" class="form-group row kt_select2_2"
                                     style="width: 100%"
                                     id="Status">
@@ -99,22 +102,27 @@
 
         </div>
         <div class="row">
-            <div class="col-sm-1 col-md-1">
-                <button class="btn btn-primary btn-block" id="btnFiterSubmitSearch">بحث</button>
+            <div style="text-align: right;margin: 10px 25px 0 0">
+        <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
+
+
+                <button class="btn btn-primary" name="pdf">تصدير PDF </button>
             </div>
         </div>
+        </form>
 
-        <div class="card-body">
+            <div class="card-body">
             <table class="table table-bordered data-table">
                 <thead>
                 <tr>
-                    <th width="2%">#</th>
-                    <th width="15%">اسم المشترك</th>
-                    <th width="13%"> قيمة كيلو واط   </th>
-                    <th width="13%"> قيمة السحب بالكيلو واط</th>
-                    <th width="13%"> قيمة الفاتورة بشيكل  </th>
+                    <th width="12%">اسم المشترك</th>
+                    <th width="12%">دورة الفاتورة </th>
+                    <th width="14%"> سعر كيلو واط   </th>
+                    <th width="14%"> قيمة السحب بالكيلو واط</th>
+                    <th width="12%"> قيمة الفاتورة   </th>
+                    <th width="8%"> الباقي   </th>
                     <th width="10%">حالة الدفع</th>
-                    <th width="35%">العمليات</th>
+                    <th width="18%">العمليات</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -128,7 +136,7 @@
                 <div class="modal-header">
                     <h5 style="font-family: 'Cairo', sans-serif;" class="modal-title"
                         id="exampleModalLabel">
-                        حذف الفاثورة
+                        حذف الفاتورة
                     </h5>
                     <button type="button" class="close" data-dismiss="modal"
                             aria-label="Close">
@@ -141,12 +149,12 @@
                         @csrf
                         <h4>هل انت متاكدمن عملية الحذف</h4>
                         <input type="hidden">
-                        <input id="Delete_id" type="hidden" name="id" class="form-control">
+                        <input id="Delete_id" type="text" name="id" class="form-control">
                         <input id="Name_Delete" type="text" name="Name_Delete" class="form-control" disabled>
 
 
                         <div class="modal-footer">
-                            <button type="submit" name="ok_button" id="ok_button" class="btn btn-danger"><span><i
+                            <button type="submit" class="btn btn-danger"><span><i
                                         class="fa fa-paper-plane"
                                         aria-hidden="true"></i></span>تاكيد
                             </button>
@@ -172,14 +180,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('Invoices.payment.store') }}" method="post">
+                    <form action="{{ route('Invoices.payment.store') }}" method="post" id="form">
                         @csrf
+                        <input id="month" type="hidden" name="month" class="form-control">
+                        <input id="year" type="hidden" name="year" class="form-control">
+
                         <input id="Payment_id" type="hidden" name="invoice_id" class="form-control">
                         <div class="form-group">
-                            <label for="exampleInputPassword1"> اسم الفاتورة :</label>
+                            <label for="exampleInputPassword1">  رقم ايصال الدفعة:</label>
                             <span class="text-danger">*</span>
 
-                            <input id="Name_Customer_Payment" type="text" name="Name_Customer_Payment" class="form-control" readonly="readonly">
+                            <input id="payment_no" type="text" name="payment_no" class="form-control payment_no">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">  قيمة الدفعة :</label>
@@ -214,37 +225,44 @@
             var $id = $(this).attr('id');
             var Name_Customer = $(this).attr('Name_Customer_Payment');
             $('#Payment_id').val($id);
-            $('#Name_Customer_Payment').val(Name_Customer);
+            $('.Name_Customer_Payment').val(Name_Customer);
+            console.log('Name_Customer_Payment'+$id);
+            var d = new Date();
+            var n = d.getMonth()+1;
+            $('#month').val(n);
+            var year = d.getFullYear();
+            $('#year').val(year);
 
             $('#Create_Payment').modal('show');
         });
 
         invoice_id = '';
         $(document).on('click', '.delete', function (e) {
-            var $id = $(this).attr('id');
+            invoice_id = $(this).attr('id');
+
             Name_Customer=$(this).attr('Name_Customer');
-            $('#Delete_id').val($id);
+            $('#Delete_id').val(invoice_id);
 
             $('#Name_Delete').val(Name_Customer);
 
             $('#confirmModal').modal('show');
         });
 
-        $('#ok_button').click(function () {
-            $.ajax({
-                url: "/Dashboard/Invoice/destroy/" + invoice_id,
-                beforeSend: function () {
-                    $('#ok_button').text('Deleting...');
-                }
-                ,
-                success: function (data) {
-                    setTimeout(function () {
-                        $('#confirmModal').modal('hide');
-                        $('.data-table').DataTable().ajax.reload();
-                    }, 2000);
-                }
-            })
-        });
+        // $('#ok_button').click(function () {
+        //     $.ajax({
+        //         url: "/Dashboard/Invoice/destroy/" +invoice_id,
+        //         beforeSend: function () {
+        //             $('#ok_button').text('Deleting...');
+        //         }
+        //         ,
+        //         success: function (data) {
+        //             setTimeout(function () {
+        //                 $('#confirmModal').modal('hide');
+        //                 $('.data-table').DataTable().ajax.reload();
+        //             }, 2000);
+        //         }
+        //     })
+        // });
         $(function () {
 
             $.ajaxSetup({
@@ -268,14 +286,13 @@
                     }
                 },
                 columns: [
-                    {data: 'id', name: 'id'},
                     {data: 'Customer', name: 'Customer'},
+                    {data: 'Date', name: 'Date'},
                     {data: 'k_w_price', name: 'k_w_price'},
                     {data: 'total_kw', name: 'total_kw'},
                     {data: 'total_price', name: 'total_price'},
+                    {data: 'Remaining', name: 'Remaining'},
                     {data: 'status', name: 'status'},
-
-
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
@@ -298,9 +315,40 @@
                 }
             });
         });
-        $('#btnFiterSubmitSearch').click(function () {
+        $('#btnFiterSubmitSearch').click(function (e) {
+            e.preventDefault();
             $('.data-table').DataTable().draw(true);
         });
+        $('#form').validate({
+            errorClass: "error fail-alert",
+            validClass: "valid success-alert",
+            // initialize the plugin
+            rules: {
+                'invoice_id': {
+                    required: true
+                },
+                'payment_no': {
+                    required: true,
+                },
+                'payment_value': {
+                    required: true,
+                },
+                errorClass: "error fail-alert",
+                validClass: "valid success-alert",
+            }
+            ,messages : {
+                'invoice_id': {
+                    required:"الرجاء ادخل الرقم"
+                },
+                'payment_no':  {
+                    required: " الرجاء ادخل رقم ايصال الفاتورة",
+                },
+                'payment_value':{
+                    required: " الرجاء ادخل قيمة الدفعة",
+                }
+            }
+        });
+
     </script>
 
 @endsection

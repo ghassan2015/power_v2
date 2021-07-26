@@ -13,95 +13,104 @@
             <div class="card-toolbar">
 
             </div>
-
         </div>
+            <form action="{{route('Payments.print_Payment')}}" method="get">
+                @csrf
+
+                <div class="form-group row m-1">
+                    <div class="col-lg-3 ">
+                        <label>اسم الفاتورة:</label>
+                        <select name="Invoice_id" class="form-group row kt_select2_2"
+                                style="width: 100%"
+                                id="Invoice_id">
+                            <option value=""> فاتورة</option>
+                            @foreach($Payments as $payment)
+
+                                <option value="{{$payment->Invoice->id}}">{{$payment->Invoice->Customer->full_name}}-{{$payment->Invoice->month}}-{{$payment->Invoice->year}}</option>
+                            @endforeach
+                        </select>
+                        @error("Invoice_id")
+                        <span class="text-danger"> {{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="col-lg-3 ">
+                        <label> الشهر :</label>
+                        <select name="Month_Payment" class="form-group row kt_select2_2"
+                                style="width: 100%" id="Month">
+                            <option value="">كل الاشهر</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+
+                        @error('Month')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-lg-3 ">
+                        <label>السنة :</label>
+                        <select name="years" class="form-group row kt_select2_2"
+                                style="width: 100%"
+                                id="years">
+                            <option value="">السنة الحالية</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                        </select>
+
+                        @error('years')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-lg-3 ">
+                        <label>الحالة :</label>
+                        <select name="Status" class="form-group row kt_select2_2"
+                                style="width: 100%"
+                                id="Status">
+                            <option value="">كل الحالات</option>
+
+                            <option value="2">مدفوع</option>
+                            <option value="1">مدفوع جزئي</option>
+
+                            <option value="0"> غير مدفوع</option>
+                        </select>
+
+                        @error('years')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                </div>
 
 
-        <div class="form-group row m-1">
-            <div class="col-lg-3 pr-1">
-                <label>فاتورة المشترك:</label>
-                <select name="Invoice_id" class="form-group row kt_select2_2"
-                        style="width: 100%;float: right" id="Invoice_id">
-                    <option value="">كل الفواتير</option>
-                 @foreach($Payments as $payment)
-                        <option value="{{$payment->Invoice->id}}">{{$payment->Invoice->Customer->full_name}} {{''."فاتورة" .''}} {{$payment->Invoice->created_at->format('Y.m.d')}}</option>
+                <div class="row">
+                    <div style="text-align: right;margin: 10px 25px 0 0">
+                        <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
 
-                    @endforeach
-                </select>
 
-                @error("Invoice_id")
-                <span class="text-danger"> {{ $message }}</span>
-                @enderror
-            </div>
-            <div class="col-lg-3 ">
-                <label>الشهر :</label>
-                <select name="Month_Payment" class="form-group row kt_select2_2"
-                        style="width: 100%" id="Month_Payment">
-                    <option value="">كل الاشهر</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                </select>
+                        <button class="btn btn-primary" name="pdf">تصدير PDF </button>
+                    </div>
+                </div>
 
-                @error('Month')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="col-lg-3 ">
-                <label> السنة:</label>
-                <select name="Years_Payment" class="form-group row kt_select2_2"
-                        style="width: 100%"
-                        id="Years_Payment">
-                    <option value="">السنة الحالية</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                </select>
+            </form>
 
-                @error('Years_Payment')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
 
-            <div class="col-lg-3 ">
-                <label>قيمة العدادالحالية :</label>
-                <select name="Status" class="form-group row kt_select2_2"
-                        style="width: 100%"
-                        id="Status">
-                    <option value="">كل الحالات</option>
+            <div class="card-body">
 
-                    <option value="2">مدفوع</option>
-                    <option value="1">مدفوع جزئي</option>
-                </select>
-
-                @error('years')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-sm-1 col-md-1">
-                <button class="btn btn-primary btn-block" id="btnFiterSubmitSearch">بحث</button>
-            </div>
-        </div>
-
-        <div class="card-body">
             <table class="table table-bordered data-table">
                 <thead>
                 <tr>
-                    <th width="2%">#</th>
                     <th width="15%">المشترك </th>
                     <th width="13%">  تاريخ الفاتورة  </th>
                     <th width="13%"> قيمة الفاتورة الكلية بشيكل  </th>
@@ -116,33 +125,48 @@
         </div>
     </div>
     <div id="confirmModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h2 class="modal-title">Confirmation</h2>
-                </div>
-                <div class="modal-body">
-                    <h4 align="center" style="margin:0;">هل انت متاكدمن عملية الحذف</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" name="ok_button" id="ok_button" class="btn btn-danger"><span><i
-                                class="fa fa-paper-plane"
-                                aria-hidden="true"></i></span>تاكيد
-                    </button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i
-                            class="fa fa-window-close" aria-hidden="true">الغاء</i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="edit_Payment" class="modal fade" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 style="font-family: 'Cairo', sans-serif;" class="modal-title"
                         id="exampleModalLabel">
-                        اضافة دفعة جديدة                    </h5>
+                        حذف الدفعة
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('Payments.destroy', 'test') }}" method="post">
+                        {{ method_field('Delete') }}
+                        @csrf
+                        <h4>هل انت متاكدمن عملية الحذف</h4>
+                        <input type="hidden">
+                        <input id="Delete_id" type="hidden" name="id" class="form-control">
+                        <input id="Name_Delete" type="text" name="Name_Delete" class="form-control" disabled>
+
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger"><span><i
+                                        class="fa fa-paper-plane"
+                                        aria-hidden="true"></i></span>تاكيد
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i
+                                    class="fa fa-window-close" aria-hidden="true">الغاء</i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>    <div id="edit_Payment" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 style="font-family: 'Cairo', sans-serif;" class="modal-title"
+                        id="exampleModalLabel">
+                        تعديل دفعة
+                                          </h5>
                     <button type="button" class="close" data-dismiss="modal"
                             aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -154,6 +178,8 @@
                         @method('put')
                         <input id="Payment_id" type="hidden" name="id" class="form-control">
                         <input id="Invoices_id" type="hidden" name="Invoice_id" class="form-control">
+                        <input id="month" type="hidden" name="month" class="form-control">
+                        <input id="year" type="hidden" name="year" class="form-control">
 
                         <div class="form-group">
                             <label for="exampleInputPassword1"> اسم الفاتورة :</label>
@@ -170,8 +196,7 @@
                         <input id="user_id" type="hidden" value="{{auth()->user()->id}}" name="user_id" class="form-control" >
 
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary"><span><i class="fa fa-paper-plane"
-                                                                                   aria-hidden="true"></i></span>تاكيد
+                            <button type="submit" class="edit-button btn btn-primary"><span><i class="fa fa-paper-plane"></i></span>تاكيد
                             </button>
 
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
@@ -191,43 +216,50 @@
 @section('js')
     <script type="text/javascript">
         $(document).on('click', '.payment', function (e) {
+            e.preventDefault();
             var $id = $(this).attr('id');
             $('#Payment_id').val($id);
             var Name_Customer = $(this).attr('Name_Invoice');
             $('#Name_Customer_Payment').val(Name_Customer);
             var Invoice_id=$(this).attr('invoice_id');
             $('#Invoices_id').val(Invoice_id);
+            var month=$(this).attr('month');
+            $('#month').val(month);
+            var year=$(this).attr('year');
+            $('#year').val(year);
             var payment_value=$(this).attr('payment_value');
             $('#payment_value').val(payment_value);
 
             $('#edit_Payment').modal('show');
         });
+
         $(document).on('click', '.delete', function (e) {
             var $id = $(this).attr('id');
-            var Payment_id = $(this).attr('Payment_id');
+            var Name_Delete = $(this).attr('Name_Delete');
+
             $('#Delete_id').val($id);
 
-            $('#Name_Delete').val(Payment_id);
+            $('#Name_Delete').val(Name_Delete);
 
             $('#confirmModal').modal('show');
         });
 
 
-        $('#ok_button').click(function () {
-            $.ajax({
-                url: "/Dashboard/Invoice/destroy/" + invoice_id,
-                beforeSend: function () {
-                    $('#ok_button').text('Deleting...');
-                }
-                ,
-                success: function (data) {
-                    setTimeout(function () {
-                        $('#confirmModal').modal('hide');
-                        $('.data-table').DataTable().ajax.reload();
-                    }, 2000);
-                }
-            })
-        });
+        // $('#ok_button').click(function () {
+        //     $.ajax({
+        //         url: "/Dashboard/Invoice/destroy/" + invoice_id,
+        //         beforeSend: function () {
+        //             $('#ok_button').text('Deleting...');
+        //         }
+        //         ,
+        //         success: function (data) {
+        //             setTimeout(function () {
+        //                 $('#confirmModal').modal('hide');
+        //                 $('.data-table').DataTable().ajax.reload();
+        //             }, 2000);
+        //         }
+        //     })
+        // });
         $(function () {
 
             $.ajaxSetup({
@@ -251,7 +283,6 @@
                     }
                 },
                 columns: [
-                    {data: 'id', name: 'id'},
                     {data: 'Customer', name: 'Customer'},
                     {data: 'Date', name: 'Date'},
                     {data: 'Invoice_Total_Price', name: 'Invoice_Total_Price'},
@@ -282,8 +313,9 @@
                 }
             });
         });
-        $('#btnFiterSubmitSearch').click(function () {
+        $('#btnFiterSubmitSearch').click(function (e) {
             $('.data-table').DataTable().draw(true);
+            e.preventDefault();
         });
     </script>
 

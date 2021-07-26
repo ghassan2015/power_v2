@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Rules\MatchOldPassword;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
@@ -54,15 +56,17 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'current_password' => ['required', new MatchOldPassword],
+            'current_password' => ['required', new MatchOldPassword()],
             'new_password' => ['required'],
             'new_confirm_password' => ['same:new_password'],
         ]);
         try {
 
             User::find(auth()->user()->id)->update(['password' => Hash::make($request->new_password)]);
+            toastr()->success('تم حفظ البيانات بنجاح');
+            return redirect()->back();
+
         } catch (\Exception $exception) {
-            return $exception;
             toastr()->error('هناك خطا لم يتم حفظ البيانات بنجاح');
             return redirect()->back();
 

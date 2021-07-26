@@ -1,4 +1,6 @@
 @extends('layouts.front')
+@section('title','الصلاحيات')
+@section('header','اضافة صلاحية جديدة')
 @section('content')
     <div class="card card-custom">
         <div class="card-header">

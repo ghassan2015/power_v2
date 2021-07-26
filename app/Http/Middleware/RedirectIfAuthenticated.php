@@ -18,8 +18,11 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        if ($guard == "customer" && Auth::guard($guard)->check()) {
+            return redirect('/Customers/Invoices');
+        }
         if (Auth::guard($guard)->check()) {
-            return redirect(RouteServiceProvider::HOME);
+            return redirect('/Dashboard/Invoices');
         }
 
         return $next($request);

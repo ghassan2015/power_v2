@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Customer\Auth;
+namespace App\Http\Controllers\Customers\Auth;
 
 use App\Http\Controllers\Controller;
 //use App\Http\Requests\CustomersLoginRequest;
@@ -14,30 +14,32 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::Customers;
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+        $this->middleware('guest:customer')->except('logout');
+    }
+//    protected $redirectTo = RouteServiceProvider::Customers;
 
 
     public function login()
     {
 
-        return view('Customer.auth.login');
+        return view('Pages.Customers.login.login');
     }
 
 
-    public function postLogin(CustomersLoginRequest $request)
+    public function postLogin(Request $request)
     {
 //        return $request;
 
-        if (auth('customer')->attempt(['email' => $request->input("email"), 'password' => $request->input("password")])) {
-            return redirect()->route('Customer.Invoice.index');
+
+        if (Auth::guard('customer')->attempt($request->only('email','password'))) {
+            return redirect()->route('Customer.Invoices.index');
+
         }
 
-        return view('Customer.auth.login');
+        return view('Pages.Customers.login.login');
 
     }
 
@@ -48,7 +50,8 @@ class LoginController extends Controller
         $gaurd = $this->getGaurd();
         $gaurd->logout();
 
-        return redirect()->route('Customer.login');
+
+        return redirect()->route('Customers.login');
     }
 
     private function getGaurd()

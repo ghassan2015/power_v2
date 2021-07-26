@@ -11,6 +11,10 @@ class SettingsSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $user = \App\SmsMessageSettings::create([
+            'url' => 'https://github.com/',
+            'sms_to'=>'972567711720',
+            'message'=>'تمت عملية الاضافة بنجاح'
+        ]);
     }
 }

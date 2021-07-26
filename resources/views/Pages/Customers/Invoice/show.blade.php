@@ -40,15 +40,26 @@
                                     <span class="opacity-70">{{ $invoice->Customer->full_name.'/'.$invoice->created_at->format('M-m')}}</span>
                                 </div>
                                 <div class="d-flex flex-column flex-root">
-                                    <span class="font-weight-bolder mb-2">اسم المشترك</span>
-                                    <span class="opacity-70">{{ $invoice->Customer->full_name}}
+                                    <span class="font-weight-bolder mb-2">اجمالي الفاتورة </span>
+                                    <span class="opacity-70">{{ $invoice->total_price}}
                                     </span>
                                 </div>
                                 <div class="d-flex flex-column flex-root">
-                                    <span class="font-weight-bolder mb-2">العنوان</span>
-                                    <span class="opacity-70">{{$invoice->Customer->location}}
+                                    <span class="font-weight-bolder mb-2">اجمالي الدفعات</span>
+                                    <span class="opacity-70">{{($invoice->total_price)-($invoice->remaining)}}
 
                                     </span>
+                                </div>
+                                <div class="d-flex flex-column flex-root">
+                                    <span class="font-weight-bolder mb-2">الحالة</span>
+                                    @if($invoice->status==2)
+                                        <span class="badge badge-success">مدفوعة</span>
+                                        @elseif($invoice->status==1)
+                                        <span class="badge badge-warning">  مدفوعة جزئي</span>
+                                        @else
+                                        <span class="badge badge-danger"> غير  مدفوعة </span>
+
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -61,42 +72,26 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th class="pl-0 font-weight-bold text-muted text-uppercase">رقم الفاتورة</th>
-                                        <th class="text-right font-weight-bold text-muted text-uppercase">سعر الكيلوواط الواحد
-                                        </th>
+                                        <th class="pl-0 font-weight-bold text-muted text-uppercase">ناريخ الدفعة  </th>
+                                        <th class="text-right font-weight-bold text-muted text-uppercase">المحصل   </th>
 
-                                        <th class="text-right font-weight-bold text-muted text-uppercase">معدل السحب
-                                            بالكيلو واط
-                                        </th>
-                                        <th class="text-right font-weight-bold text-muted text-uppercase">قيمة
-                                            المستحقة للدفع
-                                        </th>
-                                        <th class="text-right font-weight-bold text-muted text-uppercase">قيمة
-                                            الدفعات
-                                        </th>
-                                        <th class="text-right font-weight-bold text-muted text-uppercase">
-                                            حالة الدفع
-                                        </th>
+                                        <th class="text-right font-weight-bold text-muted text-uppercase">قيمة الدفعة </th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr class="font-weight-boldest font-size-lg">
-                                        <td class="pl-0 pt-7">{{$invoice->Customer->full_name}}</td>
-                                        <td class="text-right pt-7">{{$invoice->Customer->kw_price}}</td>
-                                        <td class="text-right pt-7">{{($invoice->current_reading)-($invoice->previous_reading)}}</td>
-                                        <td class="text-danger pr-0 pt-7 text-right">{{$invoice->total_price}}
-                                            <span><i class="fas fa-shekel-sign" style="color: #000000 ;font-size: 12px"></i></span></td>
-                                        <td class="text-right pt-7">{{($invoice->total_price)-($invoice->remaining)}}    <span><i class="fas fa-shekel-sign" style="color: #000000 ;font-size: 12px"></i></span></td>
+                                        @foreach($Payments as $payment)
+                                            <tr class="font-weight-boldest font-size-lg">
 
-                                        <td class="text-danger pr-0 pt-7 text-right">
+                                            <td class="pl-0 pt-7">{{$payment->created_at->format('Y-m-d')}}</td>
+                                            <td class="text-right pt-7">{{$payment->User->name}}</td>
 
-                                            @if($invoice->status==2)
-                                                <span class="badge badge-success">مدفوعة</span>
-                                            @else
-                                                <span class="badge badge-danger">  مدفوعة جزئي</span>
-                                        @endif
+                                            <td class="text-right pt-7">{{$payment->payment_value}}</td>
+                                            </tr>
+                                         @endforeach
 
-                                    </tr>
+
+
 
                                     </tbody>
                                 </table>

@@ -20,16 +20,75 @@
                             </div>
                         </div>
                         <!--begin::Form-->
-                        <form class="form" action="{{route('Invoices.store')}}" method="POST" id="form">
+
+                        <form class="form" action="{{route('Invoices.create')}}" method="get">
                             @csrf
+
                             <div class="card-body">
-                                    <div class="form-group row mg-b-20">
+                                <div class="form-group row mg-b-20 form_search">
 
-                                        <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
-                                    <label>قيمة العدادالحالية :</label>
-                                            <span class="text-danger">*</span>
+                                    <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
+                                        <label>الشهر  :</label>
+                                        <span class="text-danger">*</span>
 
-                                            <select class="form-control kt_select2_2  @error('month') is-invalid @enderror"  name="month">
+                                        <select class="form-control kt_select2_2 month  @error('month') is-invalid @enderror"  name="month">
+                                            @if(!is_null($month))
+                                            <option value="{{is_null($month)?'':$month}}">{{is_null($month)?'':$month}}</option>
+                                            @endif
+                                            <option value="">كل الاشهر</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                        </select>
+
+                                        @error('month')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
+                                        <label>السنة :</label>
+                                        <span class="text-danger">*</span>
+
+                                        <select class="form-control kt_select2_2  @error('year') is-invalid @enderror" name="year">
+                                            @if(!is_null($year))
+                                                <option value="{{is_null($year)?'':$year}}">{{is_null($year)?'':$year}}</option>
+                                            @endif
+                                            <option value="">السنة الحالية</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                        </select>
+
+                                        @error('year')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success font-weight-bold mr-2 submit form_search"><span>تاكيد</span> <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+
+                        </form>
+
+                        <form class="form " action="{{route('Invoices.store')}}" method="post">
+                            @csrf
+                            <div class="form-group row mg-b-20 form_Date">
+
+                                <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
+                                    <label>الشهر  :</label>
+                                    <span class="text-danger">*</span>
+
+                                    <select class="form-control kt_select2_2 month  @error('month') is-invalid @enderror"  name="month">
+
                                         <option value="">كل الاشهر</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -49,11 +108,11 @@
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                        <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
-                                    <label>قيمة العدادالحالية :</label>
-                                            <span class="text-danger">*</span>
+                                <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
+                                    <label>السنة :</label>
+                                    <span class="text-danger">*</span>
 
-                                            <select class="form-control kt_select2_2  @error('year') is-invalid @enderror" name="year">
+                                    <select class="form-control kt_select2_2 year @error('year') is-invalid @enderror" name="year">
                                         <option value="">السنة الحالية</option>
                                         <option value="2021">2021</option>
                                         <option value="2022">2022</option>
@@ -66,19 +125,19 @@
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                </div>
+                            </div>
 
-                                <div class="form-group row mg-b-20">
+                            <div class="form-group row mg-b-20">
                                     @foreach($Customers as $customer)
 
-                                    <div class="col-md-3 mg-t-20 mg-md-t-0" id="lnWrapper">
+                                        <div class="col-md-3 mg-t-20 mg-md-t-0" id="lnWrapper">
 
-                                        <label class="form-control-label">اسم المشترك
-                                            <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control current @error('Customer') is-invalid @enderror" name="Customer[]" disabled
+                                            <label class="form-control-label">اسم المشترك
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control current @error('Customer') is-invalid @enderror" name="Customer[]" disabled
 
-                                        value="{{$customer->full_name}}"/>
-                                    </div>
+                                                   value="{{$customer->full_name}}"/>
+                                        </div>
                                         <div class="col-md-3 mg-t-20 mg-md-t-0 test" id="lnWrapper">
                                             {{--                                        <input type="hidden" value="24" class="form-control previous_read @error('previous_reading') is-invalid @enderror" name="previous_reading"/>--}}
 
@@ -91,8 +150,9 @@
                                             <input type="hidden" value="{{$customer->Subtype->min_month_price}}" name="min_month_price[]">
 
                                             <input type="hidden"  class="form-control price_customer @error('price_customer') is-invalid @enderror" name="price_customer[]"
-
                                                    value="{{$customer->kw_price}}"/>
+                                            <input type="hidden" value="{{$customer->Subtype->kw_price}}" name="kw_price_subtype[]" id="kw_price_subtype">
+
                                             @error('current_reading')
                                             <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror
@@ -101,28 +161,30 @@
 
                                             <label class="form-control-label"> قيمة العداد بالكيلو واط
                                                 <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control total_kw @error('total_kw') is-invalid @enderror" name="total_kw[]"/>
+                                            <input type="text" class="form-control total_kw @error('total_kw') is-invalid @enderror" name="total_kw[]"readonly/>
                                             @error('total_kw')
                                             <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
 
-                                    <div class="col-md-3 mg-t-20 mg-md-t-0" id="lnWrapper">
+                                        <div class="col-md-3 mg-t-20 mg-md-t-0" id="lnWrapper">
 
-                                        <label class="form-control-label">القيمة المستحقة
-                                            <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control total @error('Total') is-invalid @enderror" name="Total[]"/>
-                                        @error('Total')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    @endforeach
+                                            <label class="form-control-label">القيمة المستحقة
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control total @error('Total') is-invalid @enderror"  name="Total[]" readonly/>
+                                            @error('Total')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                @endforeach
 
-                                </div>
+                            </div>
 
                                 <div class="card-footer" style="text-align: end">
-                                <button type="submit" class="btn btn-success font-weight-bold mr-2"><span>تاكيد</span> <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
-                            </div>
+                                    <button type="submit" class="btn btn-success font-weight-bold mr-2"><span>تاكيد</span> <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                    <button type="reset" class="btn btn-danger font-weight-bold mr-2 backward"><span>تراجع</span> <i class="fas fa-backspace"></i></button>
+
+                                </div>
                         </form>
                         <!--end::Form-->
                     </div>
@@ -133,112 +195,83 @@
             <!--end::Container-->
         </div>
     </div>
+
 @stop
 @section('js')
     <script>
+
         $(document).ready(function () {
+            $('.form_Date').hide();
 
-            $('.current').on('change', function () {
-
-                var current_reading = $(this).val();
-
-           //     console.log('customer_id'+customer_id);
-                var this_item = $(this);
-                var previous_reading='';
-                var Customer_id = $(this).val();
-                var previous_reading_customer=$('.previous_reading_customer').val();
-                if (Customer_id) {
-                    $.ajax({
-                        url: "{{ URL::to('Dashboard/Invoices/Customer') }}/" + Customer_id,
-                        type: "GET",
-                        dataType: "json",
-                        success: function (data) {
-                        //    console.log(data);
-                            $('input[name="previous_reading"]').empty();
-                            $.each(data, function (key, value) {
-                                 // console.log('curernt_name'+value.current_reading);
-                                  previous_reading= this_item.parent().next().find('.previous_reading').val(value.current_reading);
-
-                            });
-                        },
-                    });
-                }
-                setTimeout(function() {
-                    previous_reading= this_item.parent().next().find('.previous_reading').val();
-                },500);
-
-
+            var month='';
+            $('.current_reading').on('click',function () {
+                $('.form_search').hide();
+                $('.form_Date').show();
+                var d = new Date();
+                var n = d.getMonth()+1;
+                $('.month').val(n).trigger('change');
+                var y = d.getFullYear();
+                $('.year').val(y).trigger('change');
+            });
+            $('.backward').on('click',function () {
+                $('.form_search').show();
+                $('.form_Date').hide();
 
             });
 
+
+
             $('.current_reading').on('change', function () {
+                var price_kw='';
 
                 var current_reading_value = $(this).val();
-
-                //     console.log('customer_id'+customer_id);
                 var this_item = $(this);
-
+                var price= this_item.next().next().next().next().next().val();
+                console.log('test'+current_reading_value);
+                var min_month_price =this_item.next().next().next().next().val();
                 var previous_reading='';
-                var Customer_id = $(this).next().next().next().val();
-             //   console.log(Customer_id);
-                var previous_reading_customer=$('.previous_reading_customer').val();
+                var kw_price_subtype= this_item.next().next().next().next().next().next().val();
+                var Customer_id=this_item.next().next().next().val();
                 if (Customer_id) {
                     $.ajax({
                         url: "{{ URL::to('Dashboard/Invoices/Customer') }}/" + Customer_id,
                         type: "GET",
                         dataType: "json",
                         success: function (data) {
-                      //      console.log(data);
+                            //      console.log(data);
                             $('input[name="previous_reading"]').empty();
                             $.each(data, function (key, value) {
                                 // console.log('curernt_name'+value.current_reading);
                                 previous_reading= this_item.next().val(value.current_reading);
-
                             });
                         },
                     });
                 }
                 var previous_reading_value=0;
-
                 setTimeout(function () {
                     if( typeof previous_reading === 'undefined' || previous_reading=== '' ){
                         previous_reading_value= this_item.next().next().val();
-
                     }else{
                         previous_reading_value= previous_reading.val();
-
                     }
-                    var sub_reading=Math.abs(Number(current_reading_value-previous_reading_value));
-                    this_item.parent().next().find('.total_kw').val(sub_reading);
+                    if( typeof price === 'undefined' || price=== '' ) {
+                 price_kw =this_item.next().next().next().next().next().next().val();
+                    }else{
+                        price_kw=this_item.next().next().next().next().next().val();
+                    }
+                        var sub_reading=Math.abs(Number(current_reading_value-previous_reading_value));
+                          this_item.parent().next().find('.total_kw').val(sub_reading);
 
-                   var price= this_item.next().next().next().next().val();
-                    var min_month_price =this_item.next().next().next().next().val();
-
-                    var Total=Number(price*sub_reading);
-
-                if( Total>min_month_price) {
-
-
-                this_item.parent().next().next().find('.total').val(Total);
-
-        }else{
-                    this_item.parent().next().next().find('.total').val(min_month_price);
-
-                }
+                    var Total=Number(price_kw*sub_reading);
+                    if( Total>min_month_price) {
+                        this_item.parent().next().next().find('.total').val(Total);
+                    }else{
+                        this_item.parent().next().next().find('.total').val(min_month_price);
+                    }
                 },500);
-
-
-
-
                 //var price= this_item.next().next().val();
-
-
-
-
-
             });
-
-            });
+        });
         $('#form').validate({
             errorClass: "error fail-alert",
             validClass: "valid success-alert",
@@ -255,9 +288,6 @@
                 },
                 errorClass: "error fail-alert",
                 validClass: "valid success-alert",
-
-
-
             }
             ,messages : {
                 'Total[]': {
@@ -268,10 +298,9 @@
                 },
                 'total_kw[]':{
                     required: " الرجاء ادخل الرقم",
-
                 }
             }
-            });
+        });
 
     </script>
 

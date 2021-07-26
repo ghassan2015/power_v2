@@ -35,7 +35,7 @@
 
                                     <label class="form-control-label">الايميل
                                         <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('email') is-invalid @enderror" name="email" />
+                                    <input type="text" class="form-control @error('email') is-invalid @enderror" name="email" id="email" />
                                         @error('email')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
@@ -82,7 +82,8 @@
                                 <div class="form-group row mg-b-20">
 
                                     <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
-                                        <label class="form-control-label">العداد
+                                        <label class="form-control-label">
+                                            رقم العداد
                                             <span class="text-danger">*</span></label>
                                         <input type="text" name="meter" class="form-control @error('meter') is-invalid @enderror" />
                                         @error('meter')
@@ -166,7 +167,49 @@
 <script>
     $(document).ready(function () {
 
-        $('select[name="subtype_id"]').on('change', function () {
+        $('#email').on('change', function () {
+            var email=$(this).val();
+            if (email) {
+                $.ajax({
+                    url: "{{ URL::to('Dashboard/Customers/email') }}/" + email,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+
+                        $('input[name="price"]').empty();
+                        $.each(data, function (key, value) {
+                         if(value['email']){
+                             Swal.fire(
+                                 {
+                                     title: "هذا الايميل مستخدم",
+                                     text: "الرجاء استخدام ايميل اخر ",
+                                     icon: "warning",
+                                     buttons: true,
+                                     dangerMode: true,
+                                 })
+                                 .then((willDelete) => {
+                                     if (willDelete) {
+                                         swal("Poof! Your imaginary file has been deleted!", {
+                                             icon: "success",
+                                         });
+                                     } else {
+                                         swal("Your imaginary file is safe!");
+                                     }
+                                 });
+
+                         }
+
+
+
+                        });
+                    },
+                });
+            } else {
+                console.log('AJAX load did not work');
+            }
+
+        });
+            $('select[name="subtype_id"]').on('change', function () {
 
             var counter_id = $(this).val();
 
@@ -200,13 +243,14 @@
                 },
                 'email': {
                     required: true,
+                    email: true,
+
                 },
                 'password': {
                     required: true,
                 },
                 'phone':{
                     required: true,
-
                 },
                 'meter':{
                     required: true,
@@ -217,10 +261,6 @@
 
                 },
                 'subtype_id':{
-                    required: true,
-
-                },
-                'price':{
                     required: true,
 
                 },
@@ -235,12 +275,34 @@
 
             }
             ,messages : {
-                'Total[]': {
-                    required:"الرجاء ادخل الرقم"
+                'name': {
+                    required:"الرجاءاسم المشترك"
                 },
-                'current_reading[]':  {
-                    required: " الرجاء ادخل الرقم",
+                'email':  {
+                    required: " الرجاء الايميل المشترك",
+                    email:'الرجاء ادخل الايميل بطريقة صحيحة',
+
                 },
+                'location':{
+                    required: " الرجاء عنوان المشترك ",
+                },
+                'phone':{
+                    required: " الرجاء هاتف المشترك ",
+                },
+                'meter':{
+                    required: 'الرجاء ادخل رقم العداد',
+
+                },
+                'meter_value':{
+                    required: 'الرجاء ادخل القيمة الابتدائية للعداد',
+
+                },
+                'subtype_id':{
+                    required: 'الرجاءادخل نوع الاشتراك',
+
+                },
+
+
             }
         });
     });

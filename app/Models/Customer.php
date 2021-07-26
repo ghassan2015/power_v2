@@ -14,6 +14,6 @@ class Customer extends Authenticatable
         return $this->belongsTo(Subtype::class,'subtype_id');
     }
     public function Invoice(){
-        return $this->hasMany(Invoice::class,'Customer_id');
+        return $this->hasMany(Invoice::class,'customer_id');
     }
 }

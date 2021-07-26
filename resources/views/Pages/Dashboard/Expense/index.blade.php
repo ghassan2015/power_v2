@@ -4,6 +4,7 @@
 @section('content')
     <div class="card card-custom">
         <div class="card-header">
+
             <div class="card-title">
                     <span class="card-icon">
                         <i class="flaticon2-heart-rate-monitor text-primary"></i>
@@ -20,12 +21,81 @@
 
                 <!--end::Button-->
             </div>
+
         </div>
+        <form action="{{route('Expense.print_Expense')}}" method="get">
+            @csrf
+        <div class="form-group row m-3">
+            <div class="col-lg-4">
+                <label>نوع المصاريف:</label>
+                <select name="Month_Expense" class="form-group row kt_select2_2"
+                        style="width: 100%"
+                        id="Option_type">
+                    <option value=""> نوع المصاريف</option>
+                    @foreach($Options as $Option)
+                        <option value="{{$Option->id}}">{{$Option->name}}</option>
+                    @endforeach
+                </select>
+                @error("Option_id")
+                <span class="text-danger"> {{ $message }}</span>
+                @enderror
+            </div>
+            <div class="col-lg-4 ">
+                <label> الشهر :</label>
+                <select name="Month_Expense" class="form-group row kt_select2_2"
+                        style="width: 100%" id="Month">
+                    <option value="">كل الاشهر</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                @error('Month_Expense')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-lg-4 ">
+                <label>السنة :</label>
+                <select name="Year_Expense" class="form-group row kt_select2_2"
+                        style="width: 100%"
+                        id="years">
+                    <option value="">السنة الحالية</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+
+                @error('years')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+        </div>
+            <div class="row">
+                <div style="text-align: right;margin: 10px 25px 0 0">
+                    <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
+
+
+                    <button class="btn btn-primary" name="pdf">تصدير PDF </button>
+                </div>
+            </div>
+        </form>
         <div class="card-body">
+
             <table class="table table-bordered data-table" style="text-align: right">
                 <thead>
                 <tr>
-                    <th width="5%">#</th>
                     <th width="30%">الاسم</th>
                     <th width="20%">قيمة المصروفات</th>
                     <th width="30%">العمليات</th>
@@ -259,9 +329,16 @@
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('Expense.index') }}",
+                ajax: {
+                    url: "{{ route('Expense.getExpense') }}",
+                    type: 'GET',
+                    "data": function (d) {
+                        d.Option_id = $('#Option_type').val();
+                        d.Year_Expense = $('#years').val();
+                        d.Month_Expense = $('#Month').val();
+                    }
+                },
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
                     {data: 'price_expenses', name: 'price_expensesn'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -287,6 +364,9 @@
                 });
             }, false);
         })();
+        $('#btnFiterSubmitSearch').click(function () {
+            $('.data-table').DataTable().draw(true);
+        });
 
     </script>
 @endsection

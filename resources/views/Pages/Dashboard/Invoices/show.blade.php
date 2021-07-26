@@ -111,9 +111,9 @@
                         <div class="col-md-9">
                             <div class="d-flex justify-content-between">
 
-                                <button type="button" class="btn btn-primary font-weight-bold"
-                                        onclick="window.print();">طباعة الفاتورة
-                                </button>
+                                <a  class="btn btn-primary font-weight-bold"
+                                  href="{{route('Invoices.print_Invoice_pdf',$invoice->id)}}">طباعة الفاتورة
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 @extends('layouts.front')
-@section('title','الفواتير المدفوعة')
-@section('header','قائمة الفواتير المدفوعة ')
+@section('title','الفواتير المدفوعة جزئيا')
+@section('header','قائمة الفواتير  مدفوعة جزئيا ')
 
 @section('content')
     <div class="card card-custom">
@@ -9,7 +9,7 @@
                     <span class="card-icon">
                         <i class="flaticon2-heart-rate-monitor text-primary"></i>
                     </span>
-                <h3 class="card-label">لوحة عرض الفواتير  المدفوعة</h3>
+                <h3 class="card-label">لوحة عرض الفواتير مدفوعة  جزئيا</h3>
             </div>
             <div class="card-toolbar">
                 <!--begin::Dropdown-->
@@ -264,7 +264,7 @@
                 serverSide: true,
 
                 ajax: {
-                    url: "{{route('Invoices.get_fullPayment_invoice')}}",
+                    url: "{{route('Invoices.get_partially_payment_invoice')}}",
                     type: 'GET',
                     "data": function (d) {
                         d.Customer_id = $('#Customer_id').val();

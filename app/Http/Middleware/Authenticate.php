@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Request;
 
 class Authenticate extends Middleware
 {
@@ -16,9 +17,9 @@ class Authenticate extends Middleware
     {
         if (!$request->expectsJson()) {
             if (Request::is('Dashboard/*'))
-                return route('login');
+          return route('login');
             else
-                return route('Customer.login');
+                return route('Customers.login');
 
         }
     }

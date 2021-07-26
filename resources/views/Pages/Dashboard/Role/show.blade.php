@@ -1,4 +1,6 @@
 @extends('layouts.front')
+@section('title','الصلاحيات')
+@section('header',' عرض الصلاحية')
 @section('Content')
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="text-align: right;width: 95%">
         <!--begin::Subheader-->

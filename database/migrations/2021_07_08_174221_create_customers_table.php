@@ -19,7 +19,7 @@ class CreateCustomersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('mobile');
-            $table->string('kw_price');
+            $table->string('kw_price')->nullable();
             $table->string('location');
             $table->string('kw_meter_value');
             $table->string('meter_number');

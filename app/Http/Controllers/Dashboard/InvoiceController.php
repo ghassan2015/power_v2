@@ -14,16 +14,16 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
 
-        $button = '';
-        //       $States = State::all();
+      $Customers=Customer::all();
 
-        return view('Pages.Dashboard.Invoices.index');
+        return view('Pages.Dashboard.Invoices.index',compact('Customers'));
     }
 
     public function get_custom_invoice(Request $request)
     {
 
         $button = '';
+
         $data = Invoice::query();
         if ($request->input('Customer_id')) {
             $data = $data->where("Customer_id", $request->input('Customer_id'));
@@ -45,67 +45,94 @@ class InvoiceController extends Controller
                 return $data->Customer->kw_price;
             })->addColumn('Date', function ($data) {
                 return $data->created_at->format('Y.m.d');
-            })->addColumn('status', function ($data) {
 
-                if ($data->status==0){
+            })->addColumn('Remaining', function ($data) {
+                return $data->remaining;
+            })
+
+            ->addColumn('status', function ($data) {
+
+                if ($data->status == 0) {
                     return 'غير مدفوع';
 
-                }else if ($data->status==1){
-                    return ' مدفوع جزئي';
+                } else if ($data->status == 1) {
+                    return 'مدفوع جزئي';
 
-                }else{
-                    return ' مدفوع';
+                } else if ($data->status == 2) {
+
+                    return 'مدفوع';
                 }
 
             })->addColumn('action', function ($data) {
-                $button = '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/show") . '" . id="' . $data->id . '" class="edit btn btn-dark btn-sm"><span> <i class="fa fa-eye" aria-hidden="true"></i>عرض</span></a>';
+                $button = '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/show") . '" . id="' . $data->id . '"><span> <i class="icon-x far fa-eye" aria-hidden="true"></i></span></a>';
 
-                $button .= '&nbsp;&nbsp;';
-                $button = $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment edit btn btn-warning btn-sm"><span> <i class="fa fa-eye" aria-hidden="true"></i>دفعة</span></a>';
-                $button .= '&nbsp;&nbsp;';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button =  $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment"><span> <i class="icon-x fab fa-cc-apple-pay"></i></span></a>';
+//                $button = $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment"><span> <i class="fa fa-eye" aria-hidden="true"></i>دفعة</span></a>';
 
-                $button = $button . '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/edit") . '" . id="' . $data->id . '" class="edit btn btn-primary btn-sm"><span><i class="fas fa-edit"></i></span>تعديل</a>';
-                $button .= '&nbsp;&nbsp;';
-                $button .= '<button type="button" name="delete" id="' . $data->id . '" Name_Customer="' . $data->Customer->full_name .'" class="delete btn btn-danger btn-sm"><span><i class="fas fa-trash-alt"></i></span>حدف</button>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+
+                $button = $button . '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/edit") . '" . id="' . $data->id . '" ><span><i class="icon-x fas fa-edit"></i></span></a>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button .= '<a type="button" name="delete" id="' . $data->id . '" Name_Customer="' . $data->Customer->full_name .'" class="delete"><span><i class="icon-x1 text-dark-50 flaticon-delete-1"></i></span></a>';
                 return $button;
 
             })->rawColumns(['action'])
             ->make(true);
 
     }
-        public function create(){
-        $Customers=Customer::with(['Invoice'])->get();
-        return view('Pages.Dashboard.Invoices.create',compact('Customers'));
+        public function create(Request $request){
+            $month=$request->month;
+            $year=$request->year;
+         $Customers=Customer::doesntHave('Invoice')->orWhereHas('Invoice', function($q) use($request){
+                $q->whereNotIn('month',[$request->month])->whereNotIn('year',[$request->year]);
+    })->get();
+            return view('Pages.Dashboard.Invoices.Create',compact('Customers','month','year'));
 
-    }
+        }
+
+
+
+
+
+
+
+
     public function store(Request $request){
 
-        $data = $request->except('_token');
+
+     $data = $request->except('_token');
         $Customer_ids = $data['customer_id'];
         $previous_reading = $data['previous_reading'];
         $current_customer = $data['current_customer'];
         $current_reading = $data['current_reading'];
         $total_kw=$data['total_kw'];
         $Total = $data['Total'];
+
         try {
             foreach ($Customer_ids as $key => $value) {
-                $Invoice = new Invoice();
-                $Invoice->customer_id  = $Customer_ids[$key];
-                $Invoice->previous_reading = is_null($previous_reading[$key])?$current_customer[$key]:$previous_reading[$key];
-                $Invoice->current_reading = $current_reading[$key];
-                $Invoice->total_price = $Total[$key];
-                $Invoice->total_kw=$total_kw[$key];
-                $Invoice->remaining=$Total[$key];
-                $Invoice->month=$request->month;
-                $Invoice->year=$request->year;
-                $Invoice->save();
+
+            $Invoice = new Invoice();
+            $Invoice->customer_id  = $Customer_ids[$key];
+            $Invoice->previous_reading = is_null($previous_reading[$key])?$current_customer[$key]:$previous_reading[$key];
+            $Invoice->current_reading = $current_reading[$key];
+            $Invoice->total_price = $Total[$key];
+            $Invoice->total_kw=$total_kw[$key];
+            $Invoice->remaining=$Total[$key];
+            $Invoice->month=$request->month;
+            $Invoice->year=$request->year;
+            $Invoice->save();
+
+
 
             }
             toastr()->success('تمت عملية الاضافة بنجاح');
+            return redirect()->route('Invoices.index');
+
+        } catch (\Exception $exception) {
+            toastr()->error('لم يتم اضافة الفاتورة');
 
             return redirect()->route('Invoices.index');
-        } catch (\Exception $exception) {
-            return $exception;
         }
 
     }
@@ -171,4 +198,271 @@ class InvoiceController extends Controller
         $invoice=Invoice::where('Customer_id',$id)->latest()->get();
         return $invoice;
     }
+
+    public function fullPayment(){
+
+        $Customers=Customer::all();
+
+        return view('Pages.Dashboard.Invoices.fullPayment_invoice',compact('Customers'));
+
+
+    }
+    public function get_fullPayment_invoice(Request $request)
+    {
+
+        $button = '';
+
+        $data = Invoice::query();
+        $data->where('status',2)->get();
+        if ($request->input('Customer_id')) {
+            $data = $data->where("Customer_id", $request->input('Customer_id'));
+        }
+        if ($request->input('Month_Invoice')) {
+            $data = $data->whereMonth("created_at", $request->input('Month_Invoice'));
+        }
+        if ($request->input('years')) {
+            $data = $data->whereYear("created_at", $request->input('years'));
+        }
+
+        return Datatables::of($data)
+            ->addColumn('Customer', function ($data) {
+                return $data->Customer->full_name;
+
+            }) ->addColumn('k_w_price', function ($data) {
+                return $data->Customer->kw_price;
+            })->addColumn('Date', function ($data) {
+                return $data->created_at->format('Y.m.d');
+
+            })->addColumn('Remaining', function ($data) {
+                return $data->remaining;
+            })
+
+            ->addColumn('status', function ($data) {
+
+                if ($data->status == 0) {
+                    return 'غير مدفوع';
+
+                } else if ($data->status == 1) {
+                    return 'مدفوع جزئي';
+
+                } else if ($data->status == 2) {
+
+                    return 'مدفوع';
+                }
+
+            })->addColumn('action', function ($data) {
+                $button = '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/show") . '" . id="' . $data->id . '"><span> <i class="icon-x far fa-eye" aria-hidden="true"></i></span></a>';
+
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button =  $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment"><span> <i class="icon-x fab fa-cc-apple-pay"></i></span></a>';
+//                $button = $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment"><span> <i class="fa fa-eye" aria-hidden="true"></i>دفعة</span></a>';
+
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+
+                $button = $button . '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/edit") . '" . id="' . $data->id . '" ><span><i class="icon-x fas fa-edit"></i></span></a>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button .= '<a name="delete" id="' . $data->id . '" Name_Customer="' . $data->Customer->full_name .'" class="" ><span><i class="icon-x1 text-dark-50 flaticon-delete-1"></i></span></a>';
+                return $button;
+
+            })->rawColumns(['action'])
+            ->make(true);
+
+    }
+    public function partiallyPayment(){
+
+        $Customers=Customer::all();
+
+        return view('Pages.Dashboard.Invoices.partially_payment_invoice',compact('Customers'));
+
+
+    }
+    public function get_partially_Payment_invoice(Request $request)
+    {
+
+        $button = '';
+
+        $data = Invoice::query();
+        $data->where('status',1)->get();
+        if ($request->input('Customer_id')) {
+            $data = $data->where("Customer_id", $request->input('Customer_id'));
+        }
+        if ($request->input('Month_Invoice')) {
+            $data = $data->whereMonth("created_at", $request->input('Month_Invoice'));
+        }
+        if ($request->input('years')) {
+            $data = $data->whereYear("created_at", $request->input('years'));
+        }
+
+        return Datatables::of($data)
+            ->addColumn('Customer', function ($data) {
+                return $data->Customer->full_name;
+
+            }) ->addColumn('k_w_price', function ($data) {
+                return $data->Customer->kw_price;
+            })->addColumn('Date', function ($data) {
+                return $data->created_at->format('Y.m.d');
+
+            })->addColumn('Remaining', function ($data) {
+                return $data->remaining;
+            })
+
+            ->addColumn('status', function ($data) {
+
+                if ($data->status == 0) {
+                    return 'غير مدفوع';
+
+                } else if ($data->status == 1) {
+                    return 'مدفوع جزئي';
+
+                } else if ($data->status == 2) {
+
+                    return 'مدفوع';
+                }
+
+            })->addColumn('action', function ($data) {
+                $button = '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/show") . '" . id="' . $data->id . '"><span> <i class="icon-x far fa-eye" aria-hidden="true"></i></span></a>';
+
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button =  $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment"><span> <i class="icon-x fab fa-cc-apple-pay"></i></span></a>';
+//                $button = $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment"><span> <i class="fa fa-eye" aria-hidden="true"></i>دفعة</span></a>';
+
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+
+                $button = $button . '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/edit") . '" . id="' . $data->id . '" ><span><i class="icon-x fas fa-edit"></i></span></a>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button .= '<a type="button" name="delete" id="' . $data->id . '" Name_Customer="' . $data->Customer->full_name .'" ><span><i class="icon-x1 text-dark-50 flaticon-delete-1"></i></span></a>';
+                return $button;
+
+            })->rawColumns(['action'])
+            ->make(true);
+
+    }
+    public function Serach(Request $request){
+        $Customers=Customer::query();
+        $Customers->whereHas('Invoice', function($q) use($request){
+            $q->where("status",0);
+        });
+        return view('Pages.Dashboard.Invoices.create',compact('Customers'));
+    }
+    public function unpaid_invoice(){
+
+        $Customers=Customer::all();
+
+        return view('Pages.Dashboard.Invoices.unpaid_invoice',compact('Customers'));
+
+
+    }
+    public function get_unpaid_invoice(Request $request)
+    {
+
+        $button = '';
+
+        $data = Invoice::query();
+        $data->where('status',0)->get();
+        if ($request->input('Customer_id')) {
+            $data = $data->where("Customer_id", $request->input('Customer_id'));
+        }
+        if ($request->input('Month_Invoice')) {
+            $data = $data->whereMonth("created_at", $request->input('Month_Invoice'));
+        }
+        if ($request->input('years')) {
+            $data = $data->whereYear("created_at", $request->input('years'));
+        }
+
+        return Datatables::of($data)
+            ->addColumn('Customer', function ($data) {
+                return $data->Customer->full_name;
+
+            }) ->addColumn('k_w_price', function ($data) {
+                return $data->Customer->kw_price;
+            })->addColumn('Date', function ($data) {
+                return $data->created_at->format('Y.m.d');
+
+            })->addColumn('Remaining', function ($data) {
+                return $data->remaining;
+            })
+
+            ->addColumn('status', function ($data) {
+
+                if ($data->status == 0) {
+                    return 'غير مدفوع';
+
+                } else if ($data->status == 1) {
+                    return 'مدفوع جزئي';
+
+                } else if ($data->status == 2) {
+
+                    return 'مدفوع';
+                }
+
+            })->addColumn('action', function ($data) {
+
+                $button = '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/show") . '" . id="' . $data->id . '"><span> <i class="icon-x far fa-eye" aria-hidden="true"></i></span></a>';
+
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button =  $button.'<a name="payment" . id="' . $data->id . '" Name_Customer_Payment="'.$data->Customer->full_name.'" class="payment"><span> <i class="icon-x fab fa-cc-apple-pay"></i></span></a>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+
+                $button = $button . '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/edit") . '" . id="' . $data->id . '" ><span><i class="icon-x fas fa-edit"></i></span></a>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button = $button.'<button  name="delete" id="' . $data->id . '" Name_Customer="' . $data->Customer->full_name .'" class="delete"><span><i class="icon-x1 text-dark-50 flaticon-delete-1"></i></span></button>';
+                return $button;
+
+            })->rawColumns(['action'])
+            ->make(true);
+
+    }
+
+    public function print_Invoice_pdf($id)
+    {
+
+      $invoice = Invoice::findOrFail($id);
+    $customer=   $invoice->Customer->full_name;
+      $data["receipt"] = Payment::where('invoice_id',$invoice->id)->get();
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
+        $mpdf->autoScriptToLang = true;
+        $mpdf->autoLangToFont = true;
+        $mpdf->SetWatermarkImage('assets/media/logos/logo.png');
+        $mpdf->showWatermarkImage = true;
+
+        $mpdf->WriteHTML(view('Pages.Dashboard.Invoices.pdf', compact('invoice'))->render());
+        $mpdf->Output('فاتورة المشترك '.' '.$customer.'.pdf', 'I');
+    }
+
+    public function print_Invoice(Request $request)
+    {
+        $data='';
+        $data = Invoice::orwhere('customer_id', $request->input('Customer_id'))
+            ->orwhere('month', $request->input('Month_Invoice'))
+            ->orwhere('year', $request->input('years'))->get();
+        if($data->count()==0) {
+            $data = Invoice::get();
+
+        }
+        $current_reading=0;
+        $previous_reading=0;
+        $total_kw=0;
+        $total_price=0;
+        foreach ($data as $invoice){
+            $current_reading+= $invoice->current_reading;
+            $previous_reading+=$invoice->previous_reading;
+            $total_kw+=$invoice->total_kw;
+            $total_price+=$invoice->total_price;
+        }
+
+
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
+        $mpdf->autoScriptToLang = true;
+        $mpdf->autoLangToFont = true;
+        $mpdf->SetWatermarkImage('assets/media/logos/logo.png');
+        $mpdf->showWatermarkImage = true;
+
+        $mpdf->WriteHTML(view('Pages.Dashboard.Invoices.print', compact('data','current_reading','previous_reading','total_kw','total_price'))->render());
+        $mpdf->Output('كشف الفواتير'.' '.' '.$request->month.'.pdf', 'I');
+    }
+
+
+
 }

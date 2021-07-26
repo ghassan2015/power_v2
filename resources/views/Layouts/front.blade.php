@@ -4,6 +4,8 @@
 <html lang="en" direction="rtl" style="direction: rtl;">
 <!--begin::Head-->
 <head>
+
+
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&amp;l='+l:'';j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-5FS8GGP');</script>
     <!-- End Google Tag Manager -->
@@ -13,7 +15,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
     <link href="{{asset('assets/plugins/custom/datatables/datatables.bundle.rtl.css')}}" rel="stylesheet" type="text/css" />
-
+@yield('style')
+    <style>
+        .footer {
+            bottom:0;
+            width:90%;
+            height:60px;   /* Height of the footer */
+            background:#6cf;
+        }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo&family=Katibeh&family=Lateef&family=Reem+Kufi:wght@500&display=swap" rel="stylesheet">
@@ -40,16 +50,16 @@ padding:0 58% 0 0 ;
 
     input.error.fail-alert {
         color:red;
-        border: 2px solid red;
+        border: 1px solid red;
 
     }
     label.error.fail-alert {
-        color:red;
+        color:#e03e2d;
 
     }
 
     input.valid.success-alert {
-        border: 2px solid #4CAF50;
+        border: 1px solid #4CAF50;
         color: green;
     }
 </style>
@@ -106,7 +116,7 @@ font-family: 'Cairo', sans-serif;">
             <div class="brand flex-column-auto" id="kt_brand">
                 <!--begin::Logo-->
                 <a href="index.html" class="brand-logo">
-                    <img alt="Logo" class="w-65px" src="{{asset('assets/media/logos/power.jpg')}}" />
+                    <img alt="Logo" class="w-65px" src="{{asset('assets/media/logos/logo.png')}}" />
                 </a>
                 <!--end::Logo-->
             </div>
@@ -117,12 +127,23 @@ font-family: 'Cairo', sans-serif;">
                 <div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
                     <!--begin::Menu Nav-->
                     <ul class="menu-nav">
+                        @can('الرئيسية')
                         <li class="menu-item" aria-haspopup="true">
-                            <a href="index.html" class="menu-link">
+                            <a href="{{route('Dashboard.index')}}" class="menu-link">
                                 <i class="menu-icon flaticon-home"></i>
-                                <span class="menu-text">Export</span>
+                                <span class="menu-text">الرئيسية</span>
                             </a>
                         </li>
+                        @endcan
+                            @can('المشتركين')
+                                <li class="menu-item" aria-haspopup="true">
+                                    <a href="{{route('Customers.index')}}" class="menu-link">
+                                        <i class="menu-icon flaticon-interface-8"></i>
+                                        <span class="menu-text">المشتركين</span>
+                                    </a>
+                                </li>
+                            @endcan
+                        @can('الفواتير')
                         <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
                             <a href="{{route('Invoices.index')}}" class="menu-link menu-toggle">
                                 <i class="menu-icon flaticon-tabs"></i>
@@ -148,8 +169,10 @@ font-family: 'Cairo', sans-serif;">
                                 </ul>
                             </div>
                         </li>
+                            @endcan
+                        @can('الدفعات')
                         <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                            <a href="{{route('Invoices.index')}}" class="menu-link menu-toggle">
+                            <a href="{{route('Payments.index')}}" class="menu-link menu-toggle">
                                 <i class="menu-icon flaticon-tabs"></i>
                                 <span class="menu-text">الدفعات</span>
                                 <i class="menu-arrow"></i>
@@ -163,7 +186,7 @@ font-family: 'Cairo', sans-serif;">
 												</span>
                                     </li>
                                     <li class="menu-item" aria-haspopup="true">
-                                        <a href="{{route('Invoices.index')}}" class="menu-link">
+                                        <a href="{{route('Payments.index')}}" class="menu-link">
                                             <i class="menu-bullet menu-bullet-dot">
                                                 <span></span>
                                             </i>
@@ -173,7 +196,8 @@ font-family: 'Cairo', sans-serif;">
                                 </ul>
                             </div>
                         </li>
-
+@endcan
+                            @can('المصاريف التشغيلية')
                         <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
                             <a href="{{route('Expense.index')}}" class="menu-link menu-toggle">
                                 <i class="menu-icon flaticon-layers"></i>
@@ -207,12 +231,41 @@ font-family: 'Cairo', sans-serif;">
                                 </ul>
                             </div>
                         </li>
-                        <li class="menu-item" aria-haspopup="true">
-                            <a href="{{route('Customers.index')}}" class="menu-link">
-                                <i class="menu-icon flaticon-interface-8"></i>
-                                <span class="menu-text">المشتركين</span>
-                            </a>
-                        </li>
+                        @endcan
+
+                            @can('الصلاحيات')
+                                <li class="menu-item" aria-haspopup="true">
+                                    <a href="{{route('Roles.index')}}" class="menu-link">
+                                        <i class="menu-icon flaticon-interface-8"></i>
+                                        <span class="menu-text">الصلاحيات</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('الموظفين')
+                                <li class="menu-item" aria-haspopup="true">
+                                    <a href="{{route('users.index')}}" class="menu-link">
+                                        <i class="menu-icon flaticon-interface-8"></i>
+                                        <span class="menu-text">الموظفين</span>
+                                    </a>
+                                </li>
+                            @endcan
+                        @auth()
+                                <li class="menu-item" aria-haspopup="true">
+                                    <a href="{{route('Settings.edit')}}" class="menu-link">
+                                        <i class="menu-icon flaticon-interface-8"></i>
+                                        <span class="menu-text">الاعدادات</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @auth('customer')
+                            <li class="menu-item" aria-haspopup="true">
+                                <a href="{{route('Customer.Invoices.index')}}" class="menu-link">
+                                    <i class="menu-icon flaticon-interface-8"></i>
+                                    <span class="menu-text">الفواتير</span>
+                                </a>
+                            </li>
+                                @endauth
+
                     </ul>
                     <!--end::Menu Nav-->
                 </div>
@@ -751,22 +804,15 @@ font-family: 'Cairo', sans-serif;">
                             <div class="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2"
                                  id="kt_quick_user_toggle">
 
-                                @if(auth()->id())
+
+
                                 <span
-                                    class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">{{auth()->user()->name}}</span>
+                                    class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">مرحبا بك ,</span>
+                                <span
+                                    class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">{{isset(auth()->user()->name)?auth()->user()->name:auth('customer')->user()->full_name}}</span>
                                 <span class="symbol symbol-35 symbol-light-success">
 											<span class="symbol-label font-size-h5 font-weight-bold">S</span>
 										</span>
-                                @endif
-                                @if(auth('customer')->id())
-                                <span
-                                    class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hi,</span>
-                                <span
-                                    class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">{{auth('customer')->user()->Name}}</span>
-                                <span class="symbol symbol-35 symbol-light-success">
-											<span class="symbol-label font-size-h5 font-weight-bold">S</span>
-										</span>
-                                @endif
                             </div>
                         </div>
 
@@ -815,20 +861,14 @@ font-family: 'Cairo', sans-serif;">
 
             <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer" style="margin:5% 5% 0 5% ">
                 <!--begin::Container-->
-                <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
-                    <!--begin::Copyright-->
-                    <div class="text-dark order-2 order-md-1">
-                        <span class="text-muted font-weight-bold mr-2">2021©</span>
-                        <a href="http://keenthemes.com/metronic" target="_blank" class="text-dark-75 text-hover-primary">Keenthemes</a>
+                <div class="d-flex justify-content-center align-items-end py-7 py-lg-0" >
+                    <div class="text-dark-50 font-size-lg font-weight-bolder mr-10">
+                        <a href="https://www.facebook.com/shiftictcom" target="_blank"
+                           class="text-dark-75 text-hover-primary">شِفت لتكنولوجيا المعلومات والإتصالات - Shift ICT </a>
+
                     </div>
-                    <!--end::Copyright-->
-                    <!--begin::Nav-->
-                    <div class="nav nav-dark">
-                        <a href="http://keenthemes.com/metronic" target="_blank" class="nav-link pl-0 pr-5">About</a>
-                        <a href="http://keenthemes.com/metronic" target="_blank" class="nav-link pl-0 pr-5">Team</a>
-                        <a href="http://keenthemes.com/metronic" target="_blank" class="nav-link pl-0 pr-0">Contact</a>
-                    </div>
-                    <!--end::Nav-->
+                    <span class="mr-1">2021©</span>
+
                 </div>
                 <!--end::Container-->
             </div>
@@ -858,15 +898,7 @@ font-family: 'Cairo', sans-serif;">
                 <i class="symbol-badge bg-success"></i>
             </div>
             <div class="d-flex flex-column">
-                @if(auth()->user())
-                    <a href="#"
-                       class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">{{auth()->user()->name}}</a>
-                @endif
-                @if(auth('customer')->user())
-
-                    <a href="#"
-                       class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">{{auth('customer')->user()->name}}</a>
-                @endif
+                {{isset(auth()->user()->name)?auth()->user()->name:auth('customer')->user()->full_name}}
                 <div class="navi mt-2">
                     <a href="#" class="navi-item">
 								<span class="navi-link p-0 pb-2">
@@ -887,30 +919,19 @@ font-family: 'Cairo', sans-serif;">
                                             <!--end::Svg Icon-->
 										</span>
 									</span>
-                                         @if(auth()->user())
                                         <span
-                                            class="navi-text text-muted text-hover-primary">{{auth()->user()->email}}</span>
-                                    @endif
-                                    @if(auth('customer')->user())
+                                            class="navi-text text-muted text-hover-primary">{{isset(auth()->user()->name)?auth()->user()->email:auth('customer')->user()->email}}</span>
 
-                                        <a href="#"
-                                           class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">{{auth('customer')->user()->email}}</a>
-                                    @endif
 
 								</span>
                     </a>
 
-                    @if(auth()->id())
-                        <a href="{{route('admin.logout')}}"
-                           class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"><i class="ft-power"></i>تسجيل
-                            خروج</a>
-                    @endif
-                    @if(auth('customer')->user())
 
-                        <a href="{{route('Customer.logout')}}"
+                        <a href="{{isset(auth()->user()->name)? route('admin.logout'):route('Customer.logout')}}"
                            class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"><i class="ft-power"></i>تسجيل
                             خروج</a>
-                    @endif
+
+
                 </div>
             </div>
         </div>
@@ -921,8 +942,7 @@ font-family: 'Cairo', sans-serif;">
         <!--begin::Nav-->
         <div class="navi navi-spacer-x-0 p-0">
             <!--begin::Item-->
-            @if(auth()->id())
-                <a href="{{route('User.Profile')}}" class="navi-item">
+            <a href="{{isset(auth()->user()->name)? route('User.Profile'):route('Customer.Profile')}}" class="navi-item">
                     <div class="navi-link">
                         <div class="symbol symbol-40 bg-light mr-3">
                             <div class="symbol-label">
@@ -946,53 +966,20 @@ font-family: 'Cairo', sans-serif;">
                         <div class="navi-text">
                             <div class="font-weight-bold">الحساب الشخصي</div>
                             <div class="text-muted">
-                                <span class="label label-light-danger label-inline font-weight-bold">update</span></div>
                         </div>
                     </div>
-                </a>
-            @endif
-            @if(auth('customer')->user())
 
-                <a href="{{route('Customer.Profile')}}" class="navi-item">
-                    <div class="navi-link">
-                        <div class="symbol symbol-40 bg-light mr-3">
-                            <div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-success">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/General/Notification2.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
-                                             viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<rect x="0" y="0" width="24" height="24"/>
-												<path
-                                                    d="M13.2070325,4 C13.0721672,4.47683179 13,4.97998812 13,5.5 C13,8.53756612 15.4624339,11 18.5,11 C19.0200119,11 19.5231682,10.9278328 20,10.7929675 L20,17 C20,18.6568542 18.6568542,20 17,20 L7,20 C5.34314575,20 4,18.6568542 4,17 L4,7 C4,5.34314575 5.34314575,4 7,4 L13.2070325,4 Z"
-                                                    fill="#000000"/>
-												<circle fill="#000000" opacity="0.3" cx="18.5" cy="5.5" r="2.5"/>
-											</g>
-										</svg>
-                                        <!--end::Svg Icon-->
-									</span>
-                            </div>
-                        </div>
-                        <div class="navi-text">
-                            <div class="font-weight-bold">الحساب الشخصي</div>
-                            <div class="text-muted">
-                                <span class="label label-light-danger label-inline font-weight-bold">update</span></div>
-                        </div>
                     </div>
                 </a>
 
-            @endif
+
         <!--end:Item-->
             <!--begin::Item-->
-            @if(auth()->id())
-                <a href="{{route('User.Profile.password')}}" class="navi-item">
-                    @endauth
-                    @if(auth('customer')->user())
 
-                        <a href="{{route('Customer.Profile.password')}}" class="navi-item">
 
-                            @endif
+
+                        <a href="{{isset(auth()->user()->name)? route('User.Profile.password'):route('Customer.Profile.password')}}" class="navi-item">
+
                             <div class="navi-link">
                                 <div class="symbol symbol-40 bg-light mr-3">
                                     <div class="symbol-label">
@@ -1025,68 +1012,9 @@ font-family: 'Cairo', sans-serif;">
                         </a>
                         <!--end:Item-->
                         <!--begin::Item-->
-                        <a href="custom/apps/user/profile-2.html" class="navi-item">
-                            <div class="navi-link">
-                                <div class="symbol symbol-40 bg-light mr-3">
-                                    <div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-danger">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Files/Selected-file.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
-                                             viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<polygon points="0 0 24 0 24 24 0 24"/>
-												<path
-                                                    d="M4.85714286,1 L11.7364114,1 C12.0910962,1 12.4343066,1.12568431 12.7051108,1.35473959 L17.4686994,5.3839416 C17.8056532,5.66894833 18,6.08787823 18,6.52920201 L18,19.0833333 C18,20.8738751 17.9795521,21 16.1428571,21 L4.85714286,21 C3.02044787,21 3,20.8738751 3,19.0833333 L3,2.91666667 C3,1.12612489 3.02044787,1 4.85714286,1 Z M8,12 C7.44771525,12 7,12.4477153 7,13 C7,13.5522847 7.44771525,14 8,14 L15,14 C15.5522847,14 16,13.5522847 16,13 C16,12.4477153 15.5522847,12 15,12 L8,12 Z M8,16 C7.44771525,16 7,16.4477153 7,17 C7,17.5522847 7.44771525,18 8,18 L11,18 C11.5522847,18 12,17.5522847 12,17 C12,16.4477153 11.5522847,16 11,16 L8,16 Z"
-                                                    fill="#000000" fill-rule="nonzero" opacity="0.3"/>
-												<path
-                                                    d="M6.85714286,3 L14.7364114,3 C15.0910962,3 15.4343066,3.12568431 15.7051108,3.35473959 L20.4686994,7.3839416 C20.8056532,7.66894833 21,8.08787823 21,8.52920201 L21,21.0833333 C21,22.8738751 20.9795521,23 19.1428571,23 L6.85714286,23 C5.02044787,23 5,22.8738751 5,21.0833333 L5,4.91666667 C5,3.12612489 5.02044787,3 6.85714286,3 Z M8,12 C7.44771525,12 7,12.4477153 7,13 C7,13.5522847 7.44771525,14 8,14 L15,14 C15.5522847,14 16,13.5522847 16,13 C16,12.4477153 15.5522847,12 15,12 L8,12 Z M8,16 C7.44771525,16 7,16.4477153 7,17 C7,17.5522847 7.44771525,18 8,18 L11,18 C11.5522847,18 12,17.5522847 12,17 C12,16.4477153 11.5522847,16 11,16 L8,16 Z"
-                                                    fill="#000000" fill-rule="nonzero"/>
-											</g>
-										</svg>
-                                        <!--end::Svg Icon-->
-									</span>
-                                    </div>
-                                </div>
-                                <div class="navi-text">
-                                    <div class="font-weight-bold">My Activities</div>
-                                    <div class="text-muted">Logs and notifications</div>
-                                </div>
-                            </div>
-                        </a>
                         <!--end:Item-->
                         <!--begin::Item-->
-                        <a href="custom/apps/userprofile-1/overview.html" class="navi-item">
-                            <div class="navi-link">
-                                <div class="symbol symbol-40 bg-light mr-3">
-                                    <div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-primary">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
-                                             viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<rect x="0" y="0" width="24" height="24"/>
-												<path
-                                                    d="M6,2 L18,2 C18.5522847,2 19,2.44771525 19,3 L19,12 C19,12.5522847 18.5522847,13 18,13 L6,13 C5.44771525,13 5,12.5522847 5,12 L5,3 C5,2.44771525 5.44771525,2 6,2 Z M7.5,5 C7.22385763,5 7,5.22385763 7,5.5 C7,5.77614237 7.22385763,6 7.5,6 L13.5,6 C13.7761424,6 14,5.77614237 14,5.5 C14,5.22385763 13.7761424,5 13.5,5 L7.5,5 Z M7.5,7 C7.22385763,7 7,7.22385763 7,7.5 C7,7.77614237 7.22385763,8 7.5,8 L10.5,8 C10.7761424,8 11,7.77614237 11,7.5 C11,7.22385763 10.7761424,7 10.5,7 L7.5,7 Z"
-                                                    fill="#000000" opacity="0.3"/>
-												<path
-                                                    d="M3.79274528,6.57253826 L12,12.5 L20.2072547,6.57253826 C20.4311176,6.4108595 20.7436609,6.46126971 20.9053396,6.68513259 C20.9668779,6.77033951 21,6.87277228 21,6.97787787 L21,17 C21,18.1045695 20.1045695,19 19,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,6.97787787 C3,6.70173549 3.22385763,6.47787787 3.5,6.47787787 C3.60510559,6.47787787 3.70753836,6.51099993 3.79274528,6.57253826 Z"
-                                                    fill="#000000"/>
-											</g>
-										</svg>
-                                        <!--end::Svg Icon-->
-									</span>
-                                    </div>
-                                </div>
-                                <div class="navi-text">
-                                    <div class="font-weight-bold">My Tasks</div>
-                                    <div class="text-muted">latest tasks and projects</div>
-                                </div>
-                            </div>
-                        </a>
                         <!--end:Item-->
-                </a>
         </div>
         <!--end::Nav-->
         <!--begin::Separator-->

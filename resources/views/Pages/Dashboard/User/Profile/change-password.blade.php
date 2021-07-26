@@ -10,7 +10,7 @@
                     <h3 class="card-label font-weight-bolder text-dark">تغير كلمة مرور</h3>
                     <span class="text-muted font-weight-bold font-size-sm mt-1">تغير كلمة مرور حسابي الشخصي</span>
                 </div>
-                <form class="form" action="{{route('change.password')}}" method="post">
+                <form class="form" action="{{route('User.change.password')}}" method="post">
                     @csrf
                     <div class="card-toolbar">
                         <button type="submit" class="btn btn-success mr-2">تاكيد<span><i

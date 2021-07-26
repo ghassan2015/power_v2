@@ -1,82 +1,114 @@
 @extends('layouts.front')
-@section('Content')
+@section('title','الدفعات')
+@section('header','قائمة الدفعات ')
+@section('content')
     <div class="card card-custom">
         <div class="card-header">
             <div class="card-title">
                     <span class="card-icon">
                         <i class="flaticon2-heart-rate-monitor text-primary"></i>
                     </span>
-                <h3 class="card-label">لوحة عرض الدفعات الخاصة بالمستخدم </h3>
+                <h3 class="card-label">لوحة عرض الدفعات </h3>
             </div>
             <div class="card-toolbar">
-                <!--begin::Dropdown-->
-                <div class="dropdown dropdown-inline mr-2">
-                    <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="la la-download"></i>Export
-                    </button>
-                    <!--begin::Dropdown Menu-->
-                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                        <ul class="nav flex-column nav-hover">
-                            <li class="nav-header font-weight-bolder text-uppercase text-primary pb-2">Choose an
-                                option:
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon la la-print"></i>
-                                    <span class="nav-text">Print</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon la la-copy"></i>
-                                    <span class="nav-text">Copy</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon la la-file-excel-o"></i>
-                                    <span class="nav-text">Excel</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon la la-file-text-o"></i>
-                                    <span class="nav-text">CSV</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon la la-file-pdf-o"></i>
-                                    <span class="nav-text">PDF</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!--end::Dropdown Menu-->
-                </div>
-                <!--end::Dropdown-->
-                <!--begin::Button-->
-                <a type="button" href="{{route('Payment.create')}}" class="btn btn-primary"><i class="la la-plus"></i>اضافة
-                    فاتورة جديد
-                </a>
 
-                <!--end::Button-->
+            </div>
+
+        </div>
+
+
+        <div class="form-group row m-1">
+            <div class="col-lg-3 pr-1">
+                <label>فاتورة المشترك:</label>
+                <select name="Invoice_id" class="form-group row kt_select2_2"
+                        style="width: 100%;float: right" id="Invoice_id">
+                    <option value="">كل الفواتير</option>
+                    @foreach($Payments as $payment)
+                        <option value="{{$payment->Invoice->id}}">{{$payment->Invoice->Customer->full_name}} {{''."فاتورة" .''}} {{$payment->Invoice->created_at->format('Y.m.d')}}</option>
+
+                    @endforeach
+                </select>
+
+                @error("Invoice_id")
+                <span class="text-danger"> {{ $message }}</span>
+                @enderror
+            </div>
+            <div class="col-lg-3 ">
+                <label>الشهر :</label>
+                <select name="Month_Payment" class="form-group row kt_select2_2"
+                        style="width: 100%" id="Month_Payment">
+                    <option value="">كل الاشهر</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                @error('Month')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-lg-3 ">
+                <label> السنة:</label>
+                <select name="Years_Payment" class="form-group row kt_select2_2"
+                        style="width: 100%"
+                        id="Years_Payment">
+                    <option value="">السنة الحالية</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+
+                @error('Years_Payment')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-lg-3 ">
+                <label>قيمة العدادالحالية :</label>
+                <select name="Status" class="form-group row kt_select2_2"
+                        style="width: 100%"
+                        id="Status">
+                    <option value="">كل الحالات</option>
+
+                    <option value="2">مدفوع</option>
+                    <option value="1">مدفوع جزئي</option>
+                </select>
+
+                @error('years')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-1 col-md-1">
+                <button class="btn btn-primary btn-block" id="btnFiterSubmitSearch">بحث</button>
             </div>
         </div>
-        <div class="card-body">
 
-            <table class="table table-bordered data-table" style="text-align: right">
+        <div class="card-body">
+            <table class="table table-bordered data-table">
                 <thead>
                 <tr>
-
-                <tr>
                     <th width="2%">#</th>
-                    <th>رقم الوصل</th>
-                    <th> الدفعة</th>
-                    <th>العمليات</th>
+                    <th width="15%">المشترك </th>
+                    <th width="13%">  تاريخ الفاتورة  </th>
+                    <th width="13%"> قيمة الفاتورة الكلية بشيكل  </th>
+                    <th width="13%"> قيمة الدفعات  بشيكل  </th>
+                    <th width="10%">حالة الدفع</th>
+                    <th width="35%">العمليات</th>
                 </tr>
-                <
                 </thead>
                 <tbody>
                 </tbody>
@@ -85,38 +117,36 @@
     </div>
 
 
-    <div id="confirmModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h2 class="modal-title">Confirmation</h2>
-                </div>
-                <div class="modal-body">
-                    <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-
-@stop
+    <@stop
 @section('js')
     <script type="text/javascript">
-        Counter_id = '';
-        $(document).on('click', '.delete', function () {
-            Counter_id = $(this).attr('id');
-            console.log($(this).attr('id'));
+        $(document).on('click', '.payment', function (e) {
+            var $id = $(this).attr('id');
+            $('#Payment_id').val($id);
+            var Name_Customer = $(this).attr('Name_Invoice');
+            $('#Name_Customer_Payment').val(Name_Customer);
+            var Invoice_id=$(this).attr('invoice_id');
+            $('#Invoices_id').val(Invoice_id);
+            var payment_value=$(this).attr('payment_value');
+            $('#payment_value').val(payment_value);
+
+            $('#edit_Payment').modal('show');
+        });
+        $(document).on('click', '.delete', function (e) {
+            var $id = $(this).attr('id');
+            var Payment_id = $(this).attr('Payment_id');
+            $('#Delete_id').val($id);
+
+            $('#Name_Delete').val(Payment_id);
+
             $('#confirmModal').modal('show');
         });
 
+
         $('#ok_button').click(function () {
             $.ajax({
-                url: "/Dashboard/Payment/destroy/" + Counter_id,
+                url: "/Dashboard/Invoice/destroy/" + invoice_id,
                 beforeSend: function () {
                     $('#ok_button').text('Deleting...');
                 }
@@ -140,19 +170,52 @@
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('Customer.Payment.index') }}",
 
+                ajax: {
+                    url: "{{route('Customer.Payments.get_customer_payment')}}",
+                    type: 'GET',
+                    "data": function (d) {
+                        d.Invoice_id = $('#Invoice_id').val();
+                        d.Years_Payment = $('#Years_Payment').val();
+                        d.Status = $('#Status').val();
+                        d.Month_Payment = $('#Month_Payment').val();
+                    }
+                },
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'Name', name: 'Name'},
-
-                    {data: 'Paid', name: 'Invoice'},
-
+                    {data: 'id', name: 'id'},
+                    {data: 'Customer', name: 'Customer'},
+                    {data: 'Date', name: 'Date'},
+                    {data: 'Invoice_Total_Price', name: 'Invoice_Total_Price'},
+                    {data: 'payment', name: 'payment'},
+                    {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
 
 
         });
+        $(document).ready(function () {
+
+
+
+            $('#invoice_number').hide();
+            $('input[type="radio"]').click(function () {
+                if ($(this).attr('id') == 'type_div') {
+                    $('#invoice_number').hide();
+                    $('#type').show();
+                    $('#start_at').show();
+                    $('#end_at').show();
+                } else {
+                    $('#invoice_number').show();
+                    $('#type').hide();
+                    $('#start_at').hide();
+                    $('#end_at').hide();
+                }
+            });
+        });
+        $('#btnFiterSubmitSearch').click(function () {
+            $('.data-table').DataTable().draw(true);
+        });
     </script>
-@stop
+
+@endsection

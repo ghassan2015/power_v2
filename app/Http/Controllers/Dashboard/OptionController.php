@@ -18,9 +18,9 @@ class OptionController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
 
-                    $button = '<a name="edit"   id="' . $data->id . '" Name_Option="' . $data->name . '" class="edit btn btn-primary btn-sm edit_Option"><span><i class="fas fa-edit edit_Option"></i></span>تعديل</a>';
-                    $button .= '&nbsp;&nbsp;';
-                    $button .= '<button type="button" name="delete" id="' . $data->id . '" Name_Delete="' . $data->name . '" class="delete btn btn-danger btn-sm"><span><i class="fas fa-trash-alt"></i></span>حدف</button>';
+                    $button = '<a name="edit"   id="' . $data->id . '" Name_Option="' . $data->name . '" class="edit edit_Option"><span><i class="fas fa-edit edit_Option"></i></span></a>';
+                    $button .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                    $button .= '<a type="button" name="delete" id="' . $data->id . '" Name_Delete="' . $data->name . '" class="delete"><span><i class="fas fa-trash-alt"></i></span></a>';
                     return $button;
 
 

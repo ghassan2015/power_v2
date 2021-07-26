@@ -2,11 +2,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
-        @page {
-            /*margin: 150px 55px 0px 50px;*/
-            background: url('{{ public_path('assets/media/logos/logo.png')}}') no-repeat center;
-            background-image-resize: 2;
-        }
+        {{--@page {--}}
+        {{--    /*margin: 150px 55px 0px 50px;*/--}}
+        {{--    background: url('{{ public_path('assets/media/logos/logo.png')}}') no-repeat center;--}}
+        {{--    background-image-resize: 2;--}}
+        {{--}--}}
 
         header { position: fixed; top: -140px; left: 0px; right: 0px;  height: 0px; }
         footer { position: fixed; bottom: -120px; left: 0px; right: 0px;  height: 50px; }
@@ -57,49 +57,25 @@
     <thead>
     <tr>
 
-        <th class="pl-0 font-weight-bold text-muted text-uppercase">المشترك</th>
-        <th class="text-right font-weight-bold text-muted text-uppercase">دورة الفاتورة</th>
-        <th class="text-right font-weight-bold text-muted text-uppercase">القراءة الحالية</th>
-        <th class="text-right font-weight-bold text-muted text-uppercase">القراءة السابقة</th>
-        <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">معدل السحب بالكيلو واط</th>
-        <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">القيمةالاجمالية </th>
-        <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">الحالة</th>
+        <th class="pl-0 font-weight-bold text-muted text-uppercase">الاسم</th>
+        <th class="text-right font-weight-bold text-muted text-uppercase">نوع المصروفات</th>
+        <th class="text-right font-weight-bold text-muted text-uppercase">القيمة الاجمالية</th>
     </tr>
     </thead>
     <tbody>
-    @foreach($data as $invoice)
+    @foreach($data as $Expense)
         <tr>
-        <th class="pl-0 font-weight-bold text-muted text-uppercase">{{$invoice->Customer->full_name}}</th>
-            <th class="text-right font-weight-bold text-muted text-uppercase">{{$invoice->month}}-{{$invoice->year}}</th>
-
-            <th class="text-right font-weight-bold text-muted text-uppercase">{{$invoice->current_reading}}</th>
-            <th class="text-right font-weight-bold text-muted text-uppercase">{{$invoice->previous_reading}}</th>
-
-            <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">{{$invoice->current_reading-$invoice->previous_reading}}</th>
-            <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">{{$invoice->total_price}}</th>
-         @if ($invoice->status == 0)
-            <td class="text-right pr-0 font-weight-bold text-muted text-uppercase">
-                <span class="badge badge-danger">غير مدفوع</span></td>
-
-          @elseif ($invoice->status == 1)
-            <td class="text-right pr-0 font-weight-bold text-muted text-uppercase">
-                <span class="badge badge-warning">  مدفوع جزئي</span></td>
-
-        @elseif ($invoice->status == 2)
-            <td class="text-right pr-0 font-weight-bold text-muted text-uppercase">    <span class="badge badge-success">مدفوع</span></td>
-
-            @endif
-            </tr>
-            @endforeach
+        <th class="pl-0 font-weight-bold text-muted text-uppercase">{{$Expense->name}}</th>
+            <th class="text-right font-weight-bold text-muted text-uppercase">{{$Expense->Option->name}}</th>
+            <th class="text-right font-weight-bold text-muted text-uppercase">{{$Expense->price_expenses}}</th>
+        @endforeach
     <tr>
+
         <th>#</th>
         <th>المجموع</th>
 
-        <th class="text-right font-weight-bold text-muted text-uppercase">{{$current_reading}}</th>
-        <th class="text-right font-weight-bold text-muted text-uppercase">{{$previous_reading}}</th>
+        <th class="text-right font-weight-bold text-muted text-uppercase">{{$total_price}}</th>
 
-        <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">{{$total_kw}}</th>
-        <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">{{$total_price}}</th>
     </tr>
     </tbody>
 </table>

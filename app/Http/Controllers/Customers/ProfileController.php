@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers\Customers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
@@ -26,7 +26,10 @@ class ProfileController extends Controller
         $user = Customer::find($user_id);
         $request->validate([
             'email' => ['required', 'email:rfc,dns', Rule::unique('customers')->ignore($user->id),],
-            'Name' => ['required', 'string', 'max:255',]
+            'full_name' => ['required', 'string', 'max:255',],
+            'location' => ['required', 'string', 'max:255',],
+            'mobile' => ['required', 'string', 'max:255',]
+
         ]);
         try {
             $input = $request->all();
@@ -77,7 +80,7 @@ class ProfileController extends Controller
         $gaurd = $this->getGaurd();
         $gaurd->logout();
 
-        return redirect()->route('Customer.login');
+        return redirect()->route('Customers.login');
     }
 
     private function getGaurd()

@@ -21,12 +21,49 @@
 
                 <!--end::Button-->
             </div>
+
+        </div>
+        <form action="{{route('Customers.pdf')}}" method="get">
+            @csrf
+        <div class="form-group row m-1">
+            <div class="col-lg-4">
+                <label>الاسم المشترك :</label>
+                <select name="full_name" class="form-group row kt_select2_2"
+                        style="width: 100%" id="full_name">
+                    <option value="">كافة المشتركين</option>
+                    @foreach($Customers as $customer)
+                        <option value="{{$customer->full_name}}">{{$customer->full_name}}</option>
+
+                    @endforeach
+                </select>
+                @error('full_name')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-lg-4">
+                <label>الايميل :</label>
+                <input type="text" class="form-control current @error('email') is-invalid @enderror"  id="email" name="email"
+                />
+            </div>
+            <div class="col-lg-4">
+                <label>الهاتف :</label>
+                <input type="text" class="form-control current @error('mobile') is-invalid @enderror"  id="mobile" name="mobile"
+                />
+            </div>
+        </div>
+        <div class="row">
+            <div style="text-align: right;margin: 10px 25px 0 0">
+                <button class="btn btn-primary">تصدير PDF </button>
+            </from>
+                <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
+
+            </div>
         </div>
         <div class="card-body">
+
             <table class="table table-bordered data-table" >
                 <thead>
                 <tr>
-                    <th width="5%">No</th>
                     <th width="15%">الاسم</th>
                     <th width="20%">الايميل</th>
                     <th width="20%">الهاتف</th>
@@ -86,17 +123,26 @@
     <script type="text/javascript">
         $(function () {
             var table = $('.data-table').DataTable({
+                columnDefs: [{
+                    orderable: false,
+                    targets: -1
+                }],
                 processing: true,
                 serverSide: true,
-
-                ajax: "{{ route('Customers.index') }}",
+                ajax: {
+                    url: "{{ route('Customers.get_custom_Customer') }}",
+                    type: 'GET',
+                    "data": function (d) {
+                        d.full_name = $('#full_name').val();
+                        d.mobile = $('#mobile').val();
+                        d.email = $('#email').val();
+                    }
+                },
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'full_name', name: 'full_name'},
                     {data: 'email', name: 'email'},
                     {data: 'mobile', name: 'mobile'},
                     {data: 'location', name: 'location'},
-
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
@@ -110,6 +156,10 @@
 
             $('#confirmModal').modal('show');
         });
+        $('#btnFiterSubmitSearch').click(function (e) {
+            e.preventDefault();
 
+            $('.data-table').DataTable().draw(true);
+        });
     </script>
 @endsection

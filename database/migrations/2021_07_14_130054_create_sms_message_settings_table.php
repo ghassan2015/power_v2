@@ -15,6 +15,9 @@ class CreateSmsMessageSettingsTable extends Migration
     {
         Schema::create('sms_message_settings', function (Blueprint $table) {
             $table->id();
+            $table->text('url');
+            $table->string('sms_to');
+            $table->text('message');
             $table->timestamps();
         });
     }

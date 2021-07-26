@@ -22,6 +22,7 @@ class PaymentController extends Controller
 
     public function get_custom_payment(Request $request)
     {
+
         $button = '';
         $data = Payment::query();
 
@@ -29,17 +30,17 @@ class PaymentController extends Controller
             $data = $data->where("invoice_id", $request->input('Invoice_id'));
         }
         if ($request->input('Month_Payment')) {
-            $data = $data->whereMonth("created_at", $request->input('Month_Payment'));
+            $data = $data->where("month", $request->input('Month_Payment'));
         }
         if ($request->input('Status')) {
-            $data->whereHas('Invoice', function($q) use($request){
+            $data->whereHas('Invoice', function ($q) use ($request) {
                 $q->where("status", $request->input('Status'));
             });
 //            $data = $data->Invoice->where("status", $request->input('Status'));
         }
-        if ($request->input('Years_Payment')) {
+        if ($request->input('year')) {
 
-            $data = $data->whereYear("created_at", $request->input('Years_Payment'));
+            $data = $data->where("year", $request->input('year'));
         }
 
         return DataTables::of($data)
@@ -69,12 +70,12 @@ class PaymentController extends Controller
                 }
 
             })->addColumn('action', function ($data) {
-                $button = '<a name="edit" href="' . url("/Dashboard/Payments/$data->id/show") . '" . id="' . $data->id . '" class="edit btn btn-dark btn-sm"><span> <i class="fa fa-eye" aria-hidden="true"></i>عرض</span></a>';
-                $button .= '&nbsp;&nbsp;';
+                $button = '<a name="edit" href="' . url("/Dashboard/Payments/$data->id/show") . '" . id="' . $data->id . '" ><span> <i class="fa fa-eye" aria-hidden="true"></i></span></a>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
 
-                $button = $button . '<a name="edit"  id="' . $data->id . '" payment_value="'.$data->payment_value.'" invoice_id="'.$data->Invoice->id.'" Name_Invoice="'.$data->Invoice->Customer->full_name.'" class="payment btn btn-primary btn-sm"><span><i class="fas fa-edit"></i></span>تعديل</a>';
-                $button .= '&nbsp;&nbsp;';
-                $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm"><span><i class="fas fa-trash-alt"></i></span>حدف</button>';
+                $button = $button . '<a name="edit"  id="' . $data->id . '" payment_value="' . $data->payment_value . '" month="'.$data->month.'" year="'.$data->year.'"invoice_id="' . $data->Invoice->id . '" Name_Invoice="' . $data->Invoice->Customer->full_name . '" class="payment"><span><i class="fas fa-edit"></i></span></a>';
+                $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $button .= '<a type="button" name="delete"  Name_Delete="'.$data->no_payment.'"id="' . $data->id . '" class="delete"><span><i class="fas fa-trash-alt"></i></span></a>';
                 return $button;
 
             })->rawColumns(['action'])
@@ -84,30 +85,41 @@ class PaymentController extends Controller
 
     public function store(Request $request)
     {
+
+
         try {
+            $Invoice_Payment = Invoice::find($request->invoice_id);
+            $remain = $Invoice_Payment->remaining;
+            if ($remain >= $request->payment_value) {
+                $Payment = new Payment();
+                $Payment->no_payment = $request->payment_no;
+                $Payment->invoice_id = $request->invoice_id;
+                $Payment->month = $request->month;
+                $Payment->year = $request->year;
 
-            $Payment = new Payment();
-            $Payment->invoice_id = $request->invoice_id;
-            $Payment->user_id = $request->user_id;
-            $Payment->payment_value = $request->payment_value;
-            $Payment->save();
+                $Payment->user_id = $request->user_id;
+                $Payment->payment_value = $request->payment_value;
+                $Payment->save();
+                $Invoice = Invoice::find($request->invoice_id);
+                $Remaining = ($Invoice->remaining) - ($request->payment_value);
+                if ($Remaining > 0) {
+                    $Invoice->update([
+                        'remaining' => $Remaining,
+                        'Status' => 1
 
-            $Invoice= Invoice::find($request->invoice_id);
-            $Remaining=($Invoice->remaining)-($request->payment_value);
-            if($Remaining>0){
-                $Invoice->update([
-                    'remaining' => $Remaining,
-                    'Status' => 1
+                    ]);
+                } else {
+                    $Invoice->update([
+                        'remaining' => $Remaining,
+                        'Status' => 2
 
-                ]);
-            }else{
-                $Invoice->update([
-                    'remaining' => $Remaining,
-                    'Status' => 2
+                    ]);
+                }
+                toastr()->success('تمت عملية الاضافة بنجاح');
+            } else {
+                toastr()->error('قيمة الدفعة كبير من المبلغ المستحق');
 
-                ]);
             }
-            toastr()->success('تمت عملية الاضافة بنجاح');
             return redirect()->route('Invoices.index');
         } catch (\Exception $exception) {
             toastr()->error('لم يتم حفظ البيانات بنجاح');
@@ -116,33 +128,36 @@ class PaymentController extends Controller
         }
 
     }
+
     public function update(Request $request)
     {
 
-            $Payment =Payment::find($request->id);
-            $Payment->invoice_id = $request->Invoice_id;
-            $Payment->user_id = $request->user_id;
-            $Payment->payment_value = $request->payment_value;
-            $Payment->save();
-            $Invoice= Invoice::find($request->Invoice_id);
-            $Remaining=($Invoice->remaining)-($request->payment_value);
-            if($Remaining>0){
-                $Invoice->update([
-                    'remaining' => $Remaining,
-                    'Status' => 1
+        $Payment = Payment::find($request->id);
+        $Payment->invoice_id = $request->Invoice_id;
+        $Payment->month = $request->month;
+        $Payment->year = $request->year;
+        $Payment->user_id = $request->user_id;
+        $Payment->payment_value = $request->payment_value;
+        $Payment->save();
+        $Invoice = Invoice::find($request->Invoice_id);
+        $Remaining = ($Invoice->remaining) - ($request->payment_value);
+        if ($Remaining > 0) {
+            $Invoice->update([
+                'remaining' => $Remaining,
+                'Status' => 1
 
-                ]);
-            }else{
-                $Invoice->update([
-                    'remaining' => $Remaining,
-                    'Status' => 2
+            ]);
+        } else {
+            $Invoice->update([
+                'remaining' => $Remaining,
+                'Status' => 2
 
-                ]);
-            }
+            ]);
+        }
 
-            toastr()->success('تمت عملية التعديل بنجاح');
+        toastr()->success('تمت عملية التعديل بنجاح');
 
-            return redirect()->route('Payments.index');
+        return redirect()->route('Payments.index');
 
 
     }
@@ -157,21 +172,42 @@ class PaymentController extends Controller
         return view('Pages.Dashboard.Payment.show', compact('Payment'));
 
     }
-    public function destroy(Request $request){
+
+    public function destroy(Request $request)
+    {
         try {
-            $Payment =Payment::findOrFail ($request->id);
+            $Payment = Payment::findOrFail($request->id);
             $Payment->delete();
             toastr()->success('تم عملية الحذف بنجاح');
             return redirect()->route('Payments.index');
 
-        }catch (\Exception $exception){
+        }catch (\Exception $exception) {
             toastr()->error('هذا الدفعة غير موجود حاول مرة اخرى');
             return redirect()->route('Payments.index');
         }
 
 
-
     }
+
+    public function print_Payment(Request $request)
+    {
+         $data = Payment::orwhere('invoice_id', $request->Invoice_id)
+            ->orwhere('month', $request->input('Month_Payment'))
+            ->orwhereYear('year', $request->input('years'))->get();
+
+        if($data->count()==0) {
+            $data = Payment::get();
+
+        }
+
+
+            $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
+            $mpdf->autoScriptToLang = true;
+            $mpdf->autoLangToFont = true;
+            $mpdf->WriteHTML(view('Pages.Dashboard.Payment.pdf', compact('data'))->render());
+            $mpdf->Output('كشف الفواتير' . ' ' . ' ' . $request->month . '.pdf', 'I');
+        }
+
 
 
 }

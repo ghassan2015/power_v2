@@ -11,19 +11,16 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
 {
-    public function __construct()
+
+    function __construct()
     {
-        $this->middleware('auth');
+//
+//        $this->middleware('permission:عرض صلاحية', ['only' => ['index']]);
+//        $this->middleware('permission:اضافة صلاحية', ['only' => ['create','store']]);
+//        $this->middleware('permission:تعديل صلاحية', ['only' => ['edit','update']]);
+//        $this->middleware('permission:حذف صلاحية', ['only' => ['destroy']]);
+
     }
-//    function __construct()
-//    {
-//
-////        $this->middleware('permission:عرض صلاحية', ['only' => ['index']]);
-////        $this->middleware('permission:اضافة صلاحية', ['only' => ['create','store']]);
-////        $this->middleware('permission:تعديل صلاحية', ['only' => ['edit','update']]);
-////        $this->middleware('permission:حذف صلاحية', ['only' => ['destroy']]);
-//
-//    }
 
     public function index(Request $request)
     {
@@ -39,9 +36,9 @@ class RoleController extends Controller
                 ->addColumn('action', function ($data) {
 
 
-                    $button = '<a name="edit" href="' . url("/Dashboard/roles/$data->id/show") . '" . id="' . $data->id . '" class="edit btn btn-secondary btn-sm"><span><i class="fa fa-eye" aria-hidden="true"></i></span>عرض</a>';
+                    $button = '<a name="edit" href="' . url("/Dashboard/Roles/$data->id/show") . '" . id="' . $data->id . '" class="edit btn btn-secondary btn-sm"><span><i class="fa fa-eye" aria-hidden="true"></i></span>عرض</a>';
                     $button .= '&nbsp;&nbsp';
-                    $button = $button . '<a name="edit" href="' . url("/Dashboard/roles/$data->id/edit") . '" . id="' . $data->id . '" class="edit btn btn-primary btn-sm"><span><i class="fas fa-edit"></i></span>تعديل</a>';
+                    $button = $button . '<a name="edit" href="' . url("/Dashboard/Roles/$data->id/edit") . '" . id="' . $data->id . '" class="edit btn btn-primary btn-sm"><span><i class="fas fa-edit"></i></span>تعديل</a>';
                     $button .= '&nbsp;&nbsp;';
                     $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm"><span><i class="fas fa-trash-alt"></i></span>حدف</button>';
                     return $button;
@@ -69,8 +66,10 @@ class RoleController extends Controller
         ]);
         $role = Role::create(['name' => $request->input('Name')]);
         $role->syncPermissions($request->input('permission'));
-        return redirect()->route('Roles.index')
-            ->with('success', 'Role created successfully');
+        toastr()->success('تمت عملية الاضافة بنجاح');
+
+        return redirect()->route('Roles.index');
+
     }
 
     public function show($id)
@@ -100,14 +99,16 @@ class RoleController extends Controller
         $role->name = $request->input('Name');
         $role->save();
         $role->syncPermissions($request->input('permission'));
-        return redirect()->route('roles.index')
-            ->with('success', 'Role updated successfully');
+        toastr()->success('تمت عمليةالتعديل بنجاح');
+        return redirect()->route('Roles.index');
     }
 
     public function destroy($id)
     {
         DB::table("roles")->where('id', $id)->delete();
-        return redirect()->route('roles.index')
-            ->with('success', 'Role deleted successfully');
+        toastr()->success('تمت الحذف بنجاح');
+
+        return redirect()->route('Roles.index');
+
     }
 }
