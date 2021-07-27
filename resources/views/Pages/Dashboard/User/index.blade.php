@@ -86,6 +86,9 @@
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+                },
                 ajax: "{{ route('users.index') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},

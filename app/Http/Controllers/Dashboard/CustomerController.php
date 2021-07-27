@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use Alkoumi\LaravelHijriDate\Hijri;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Requests\CustomerUpdateRequest;
@@ -144,6 +145,8 @@ class CustomerController extends Controller
     }
     public function pdf(Request $request){
         $data='';
+        $history=Carbon::now()->format('Y-m-d');
+        $day=Hijri::Date('l');
         $data = Customer::orwhere('full_name', $request->input('full_name'))
                 ->orwhere('email', $request->input('email'))
                 ->orwhere('mobile', $request->input('mobile'))->get();
@@ -157,7 +160,7 @@ class CustomerController extends Controller
         $mpdf->autoLangToFont = true;
         $mpdf->SetWatermarkImage('assets/media/logos/logo.png');
         $mpdf->showWatermarkImage = true;
-        $mpdf->WriteHTML(view('Pages.Dashboard.Customers.pdf', compact('data'))->render());
+        $mpdf->WriteHTML(view('Pages.Dashboard.Customers.pdf', compact('data','day','history'))->render());
         $mpdf->Output('كشف المشتركين'.' '.' '.$request->full_name.'.pdf', 'I');
     }
 

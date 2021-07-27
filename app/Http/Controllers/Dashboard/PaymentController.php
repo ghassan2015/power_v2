@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use Alkoumi\LaravelHijriDate\Hijri;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -199,12 +201,16 @@ class PaymentController extends Controller
             $data = Payment::get();
 
         }
-
+        $history=Carbon::now()->format('Y-m-d');
+        $day=Hijri::Date('l');
 
             $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
             $mpdf->autoScriptToLang = true;
             $mpdf->autoLangToFont = true;
-            $mpdf->WriteHTML(view('Pages.Dashboard.Payment.pdf', compact('data'))->render());
+        $mpdf->SetWatermarkImage('assets/media/logos/logo.png');
+        $mpdf->showWatermarkImage = true;
+
+        $mpdf->WriteHTML(view('Pages.Dashboard.Payment.pdf', compact('data','day','history'))->render());
             $mpdf->Output('كشف الفواتير' . ' ' . ' ' . $request->month . '.pdf', 'I');
         }
 

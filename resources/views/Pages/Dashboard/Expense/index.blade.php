@@ -329,6 +329,9 @@
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+                },
                 ajax: {
                     url: "{{ route('Expense.getExpense') }}",
                     type: 'GET',

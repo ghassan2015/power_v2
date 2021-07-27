@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Dashboard;
+use Alkoumi\LaravelHijriDate\Hijri;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 class InvoiceController extends Controller
@@ -35,7 +37,7 @@ class InvoiceController extends Controller
             $data = $data->whereYear("created_at", $request->input('years'));
         }
         if ($request->input('Status')) {
-            $data = $data->where("Status", $request->input('Status'));
+            $data = $data->where("status", $request->input('Status'));
         }
         return Datatables::of($data)
             ->addColumn('Customer', function ($data) {
@@ -405,7 +407,7 @@ class InvoiceController extends Controller
 
                 $button = $button . '<a name="edit" href="' . url("/Dashboard/Invoices/$data->id/edit") . '" . id="' . $data->id . '" ><span><i class="icon-x fas fa-edit"></i></span></a>';
                 $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
-                $button = $button.'<button  name="delete" id="' . $data->id . '" Name_Customer="' . $data->Customer->full_name .'" class="delete"><span><i class="icon-x1 text-dark-50 flaticon-delete-1"></i></span></button>';
+                $button = $button.'<a  name="delete" id="' . $data->id . '" Name_Customer="' . $data->Customer->full_name .'" class="delete"><span><i class="icon-x1 text-dark-50 flaticon-delete-1"></i></span></button>';
                 return $button;
 
             })->rawColumns(['action'])
@@ -416,22 +418,27 @@ class InvoiceController extends Controller
     public function print_Invoice_pdf($id)
     {
 
-      $invoice = Invoice::findOrFail($id);
+        $history=Carbon::now()->format('Y-m-d');
+        $day=Hijri::Date('l');
+        $invoice = Invoice::findOrFail($id);
     $customer=   $invoice->Customer->full_name;
       $data["receipt"] = Payment::where('invoice_id',$invoice->id)->get();
 
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
-        $mpdf->SetWatermarkImage('assets/media/logos/logo.png');
+        $mpdf->SetWatermarkImage('assets/media/logos/logo_3.png');
         $mpdf->showWatermarkImage = true;
 
-        $mpdf->WriteHTML(view('Pages.Dashboard.Invoices.pdf', compact('invoice'))->render());
+        $mpdf->WriteHTML(view('Pages.Dashboard.Invoices.pdf', compact('day','history','invoice'))->render());
         $mpdf->Output('فاتورة المشترك '.' '.$customer.'.pdf', 'I');
     }
 
     public function print_Invoice(Request $request)
     {
+        $history=Carbon::now()->format('Y-m-d');
+        $date=Hijri::Date('l');                         // Without Defining Timestamp It will return Hijri Date of [NOW]  => Results "الجمعة ، 12 ربيع الآخر ، 1442"
+
         $data='';
         $data = Invoice::orwhere('customer_id', $request->input('Customer_id'))
             ->orwhere('month', $request->input('Month_Invoice'))
@@ -459,7 +466,7 @@ class InvoiceController extends Controller
         $mpdf->SetWatermarkImage('assets/media/logos/logo.png');
         $mpdf->showWatermarkImage = true;
 
-        $mpdf->WriteHTML(view('Pages.Dashboard.Invoices.print', compact('data','current_reading','previous_reading','total_kw','total_price'))->render());
+        $mpdf->WriteHTML(view('Pages.Dashboard.Invoices.print', compact('history','date','data','current_reading','previous_reading','total_kw','total_price'))->render());
         $mpdf->Output('كشف الفواتير'.' '.' '.$request->month.'.pdf', 'I');
     }
 

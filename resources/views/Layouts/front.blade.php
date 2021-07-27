@@ -1067,7 +1067,7 @@ font-family: 'Cairo', sans-serif;">
 <script src="{{asset('assets/plugins/global/plugins.bundle.js')}}"></script>
 <script src="{{asset('assets/plugins/custom/prismjs/prismjs.bundle.js')}}"></script>
 <script src="{{asset('assets/js/scripts.bundle.js')}}"></script>
-
+<script src="{{asset('//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json')}}"></script>
 <script src="{{asset('assets/js/pages/crud/forms/widgets/select2.js')}}"></script>
 <script src="{{asset('assets/js/pages/crud/forms/validation/form-controls.js')}}"></script>
 <!--begin::Page Vendors(used by this page)-->

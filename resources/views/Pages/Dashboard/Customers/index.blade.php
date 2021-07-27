@@ -51,14 +51,16 @@
                 />
             </div>
         </div>
-        <div class="row">
-            <div style="text-align: right;margin: 10px 25px 0 0">
-                <button class="btn btn-primary">تصدير PDF </button>
-            </from>
-                <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
+            <div class="row">
+                <div style="text-align: right;margin: 10px 25px 0 0">
+                    <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
 
+
+                    <button class="btn btn-primary" name="pdf">تصدير PDF </button>
+                </div>
             </div>
-        </div>
+
+        </form>
         <div class="card-body">
 
             <table class="table table-bordered data-table" >
@@ -127,6 +129,9 @@
                     orderable: false,
                     targets: -1
                 }],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+                },
                 processing: true,
                 serverSide: true,
                 ajax: {

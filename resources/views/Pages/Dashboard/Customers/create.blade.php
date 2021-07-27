@@ -10,7 +10,7 @@
                     <!--begin::Card-->
                     <div class="card card-custom gutter-b example example-compact">
                         <div class="card-header">
-                            <h3 class="card-title">اضافة مشترك جديد</h3>
+                            <h3 class="card-title"> مشترك جديد</h3>
                             <div class="card-toolbar">
                                 <div class="example-tools justify-content-center">
                                     <span class="example-toggle" data-toggle="tooltip" title="View code"></span>
@@ -251,6 +251,8 @@
                 },
                 'phone':{
                     required: true,
+                    minlength: 10,
+
                 },
                 'meter':{
                     required: true,
@@ -288,6 +290,7 @@
                 },
                 'phone':{
                     required: " الرجاء هاتف المشترك ",
+                    minlength:'الرجاء ادخل 10 ارقام '
                 },
                 'meter':{
                     required: 'الرجاء ادخل رقم العداد',
@@ -295,6 +298,7 @@
                 },
                 'meter_value':{
                     required: 'الرجاء ادخل القيمة الابتدائية للعداد',
+
 
                 },
                 'subtype_id':{

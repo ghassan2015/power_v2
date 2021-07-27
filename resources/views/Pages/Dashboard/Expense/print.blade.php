@@ -51,6 +51,23 @@
     </style>
 </head>
 <body>
+<div>
+    <div class="navbar-header">
+        <div style="text-align: right">
+            <img alt="Oriental Standard Online Course" src="{{public_path('assets/media/logos/logo.png')}}" style="height:7%;width: 7%" />
+            <span class="align-self-center">الشركة العربية المتحدة للطاقة البديلة
+                </span>
+            <h5>العنوان:مدينة غزة-فلسطين</h5>
+            <h5>الهاتف:032487523 </h5>
+            <h5>جوال:0567711720 </h5>
+
+        </div>
+
+        <div style="text-align:left;padding-top: -200px">
+            {{$day.''.$history}}
+
+        </div>
+        <div style="margin-top: 20%"></div>
 <h3 style="text-align: center">قائمة الفواتير  </h3>
 <table border=1 frame=void rules=rows>
 

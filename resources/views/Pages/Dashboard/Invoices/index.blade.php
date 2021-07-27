@@ -92,7 +92,7 @@
                                 <option value="2">مدفوع</option>
                                 <option value="1">مدفوع جزئي</option>
 
-                                <option value="0"> غير مدفوع</option>
+                                <option value="00"> غير مدفوع</option>
                             </select>
 
                             @error('years')
@@ -217,7 +217,7 @@
     </div>
 
 
-    <@stop
+    @stop
 @section('js')
     <script type="text/javascript">
 
@@ -272,7 +272,10 @@
             });
 
             var table = $('.data-table').DataTable({
-                processing: true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+                },
+                    processing: true,
                 serverSide: true,
 
                 ajax: {

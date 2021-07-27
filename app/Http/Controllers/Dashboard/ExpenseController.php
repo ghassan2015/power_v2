@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use Alkoumi\LaravelHijriDate\Hijri;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
 use App\Http\Controllers\Controller;
 use App\Models\Option;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Datatables;
 
@@ -113,14 +115,15 @@ return  \Yajra\DataTables\DataTables::of($data)
 foreach ($data as $Expense){
     $total_price+=$Expense->price_expenses;
 }
-
+        $history=Carbon::now()->format('Y-m-d');
+        $day=Hijri::Date('l');
 
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
         $mpdf->SetWatermarkImage('assets/media/logos/logo.png');
         $mpdf->showWatermarkImage = true;
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
-        $mpdf->WriteHTML(view('Pages.Dashboard.Expense.print', compact('data','total_price'))->render());
+        $mpdf->WriteHTML(view('Pages.Dashboard.Expense.print', compact('data','total_price','day','history'))->render());
         $mpdf->Output('كشف الفواتير'.' '.' '.$request->month.'.pdf', 'I');
     }
 

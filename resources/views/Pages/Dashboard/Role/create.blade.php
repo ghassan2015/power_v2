@@ -31,8 +31,10 @@
                         <div>
                                             <span class="switch switch-outline switch-icon switch-success">
                                                 <label>
-                                                    <input type="checkbox"
-                                                           name="permission[]" value="{{$permission->id}}"/>
+                                                  <input type="checkbox" name="permission[]" value="{{ $permission->id }}"
+                                                         @if ($permission->name)
+                                                         checked
+           @endif>
                                                     <span></span>
                                                 </label>
                                             </span>

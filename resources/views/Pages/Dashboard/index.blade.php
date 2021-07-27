@@ -11,7 +11,8 @@
                 <h3 class="card-label">التقارير  </h3>
             </div>
         </div>
-            <div class="row">
+
+            <div class="row mt-5 ml-2 mr-2 mb-2">
             <!--begin::Stats Widget 16-->
         <div class="col-lg-3">
             <!--begin::Stats Widget 17-->
@@ -98,7 +99,7 @@
 
         <div class="col-lg-3">
             <!--begin::Stats Widget 17-->
-            <a href="#" class="card card-custom bg-radial-gradient-secondary bg-hover-state-info card-stretch card-stretch gutter-b">
+            <a href="{{route('Invoices.unpaid_invoice')}}" class="card card-custom bg-radial-gradient-secondary bg-hover-state-info card-stretch card-stretch gutter-b">
                 <!--begin::Body-->
                 <div class="card-body">
 												<span class="svg-icon svg-icon-white svg-icon-3x ml-n1">
@@ -125,7 +126,7 @@
         </div>
 
     </div>
-        <div class="row">
+        <div class="row m-2">
             <!--begin::Stats Widget 16-->
             <div class="col-lg-3">
                 <!--begin::Stats Widget 17-->

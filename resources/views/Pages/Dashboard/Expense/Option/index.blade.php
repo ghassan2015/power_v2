@@ -221,6 +221,9 @@
             {{--    });--}}
 
         var table = $('.data-table').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+                },
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('Options.index') }}",

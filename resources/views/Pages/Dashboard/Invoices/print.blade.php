@@ -51,6 +51,32 @@
     </style>
 </head>
 <body>
+<div>
+{{--    <div id="image" style="float:left;">--}}
+{{--                <img src="{{public_path('assets/media/logos/logo.png')}}" width="15px" height="15px"><b>--}}
+{{--    </div>--}}
+
+
+
+
+    <div class="navbar-header">
+        <div style="text-align: right">
+            <img alt="Oriental Standard Online Course" src="{{public_path('assets/media/logos/logo.png')}}" style="height:7%;width: 7%" />
+           <span style="translate(0,100)">الشركة العربية المتحدة للطاقة البديلة</span>
+            <div></div>
+        <h5>العنوان:مدينة غزة-فلسطين</h5>
+        <h5>الهاتف:032487523 </h5>
+        <h5>جوال:0567711720 </h5>
+
+
+
+        </div>
+
+        <div style="text-align:left;padding-top: -200px">
+            {{$date.' '. $history}}
+
+        </div>
+<div style="margin-top: 20%"></div>
 <h3 style="text-align: center">قائمة الفواتير  </h3>
 <table border=1 frame=void rules=rows>
 
@@ -103,4 +129,10 @@
     </tr>
     </tbody>
 </table>
-
+<script>
+    n =  new Date();
+    y = n.getFullYear();
+    m = n.getMonth() + 1;
+    d = n.getDate();
+    document.getElementById("date").innerHTML = m + "/" + d + "/" + y;
+    </script>
