@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use Alkoumi\LaravelHijriDate\Hijri;
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
@@ -17,9 +18,8 @@ class PaymentController extends Controller
 
         $button = '';
         //       $States = State::all();
-
-        $Payments = Payment::with(['Invoice'])->get();
-        return view('Pages.Dashboard.Payment.index', compact('Payments'));
+        $Customers=Customer::all();
+        return view('Pages.Dashboard.Payment.index', compact('Customers'));
     }
 
     public function get_custom_payment(Request $request)
@@ -28,21 +28,22 @@ class PaymentController extends Controller
         $button = '';
         $data = Payment::query();
 
-        if ($request->input('Invoice_id')) {
-            $data = $data->where("invoice_id", $request->input('Invoice_id'));
+        if ($request->input('Customer_id')) {
+            $data->whereHas('Invoice', function ($q) use ($request) {
+                $q->where("customer_id", $request->input('Customer_id'));
+            });
         }
         if ($request->input('Month_Payment')) {
-            $data = $data->where("month", $request->input('Month_Payment'));
+            $data = $data->whereMonth("created_at", $request->input('Month_Payment'));
+        }
+        if ($request->input('Years_Payment')) {
+            $data = $data->whereYear("created_at", $request->input('Years_Payment'));
         }
         if ($request->input('Status')) {
             $data->whereHas('Invoice', function ($q) use ($request) {
                 $q->where("status", $request->input('Status'));
             });
 //            $data = $data->Invoice->where("status", $request->input('Status'));
-        }
-        if ($request->input('year')) {
-
-            $data = $data->where("year", $request->input('year'));
         }
 
         return DataTables::of($data)

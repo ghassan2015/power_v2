@@ -23,20 +23,18 @@
                 </div>
                 <!--end::Aside Top-->
                 <!--begin::Aside Bottom-->
-                <div class="aside-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center"
-                     style="background-image: url({{asset('assets/media/svg/illustrations/login-visual-1.svg')}})"></div>
+                <div class="aside-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center" style="background-image: url({{asset('assets/media/svg/illustrations/login-visual-1.svg')}})"></div>
                 <!--end::Aside Bottom-->
             </div>
             <!--begin::Aside-->
             <!--begin::Content-->
-            <div
-                class="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+            <div class="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
                 <!--begin::Content body-->
                 <div class="d-flex flex-column-fluid flex-center">
                     <!--begin::Signin-->
                     <div class="login-form login-signin">
                         <!--begin::Form-->
-                        <form class="form" novalidate="novalidate" action="{{route('postLogin')}}" method="post">
+                        <form class="myform"  id="myform" action="{{route('postLogin')}}" method="post">
                             @csrf
                             <!--begin::Title-->
                                 <div class="pb-13 pt-lg-0 pt-5">
@@ -49,8 +47,7 @@
                                     <span class="text-danger">*</span>
 
                                     <label class="font-size-h6 font-weight-bolder text-dark">الايميل</label>
-                                    <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" type="email"
-                                           name="email" required/>
+                                    <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg email" type="email" name="email" />
                                     @error('email')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
@@ -60,8 +57,8 @@
                                 <div class="form-group">
                                     <span class="text-danger">*</span>
                                     <label class="font-size-h6 font-weight-bolder text-dark">كلمةالمرور</label>
-                                    <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" type="password"
-                                           name="password" required/>
+                                    <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg password" type="password"
+                                           name="password"/>
 
                                     @error('password')
                                     <div class="alert alert-danger">{{ $message }}</div>
@@ -100,4 +97,25 @@
         <!--end::Login-->
     </div>
     <!--end::Main-->
+@endsection
+@section('js')
+<script>
+    $(document).ready(function () {
+
+        $('#myform').validate({ // initialize the plugin
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                }
+            }
+        });
+
+    });
+
+</script>
 @endsection

@@ -29,7 +29,7 @@ class LoginController extends Controller
     }
 
 
-    public function postLogin(Request $request)
+    public function postLogin(CustomersLoginRequest $request)
     {
 //        return $request;
 

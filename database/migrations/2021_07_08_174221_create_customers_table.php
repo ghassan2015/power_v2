@@ -22,7 +22,7 @@ class CreateCustomersTable extends Migration
             $table->string('kw_price')->nullable();
             $table->string('location');
             $table->string('kw_meter_value');
-            $table->string('meter_number');
+            $table->string('meter_number')->nullable();
             $table->foreignId('subtype_id')->references('id')->on('subtypes')->onDelete('cascade');
             $table->tinyInteger('status')->default(1);
             $table->text('note')->nullable();

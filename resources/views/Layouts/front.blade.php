@@ -115,7 +115,7 @@ font-family: 'Cairo', sans-serif;">
             <!--begin::Brand-->
             <div class="brand flex-column-auto" id="kt_brand">
                 <!--begin::Logo-->
-                <a href="index.html" class="brand-logo">
+                <a href="{{route('Dashboard.index')}}" class="brand-logo">
                     <img alt="Logo" class="w-65px" src="{{asset('assets/media/logos/logo.png')}}" />
                 </a>
                 <!--end::Logo-->
@@ -249,7 +249,7 @@ font-family: 'Cairo', sans-serif;">
                                     </a>
                                 </li>
                             @endcan
-                        @auth()
+                            @can('الاعدادات')
                                 <li class="menu-item" aria-haspopup="true">
                                     <a href="{{route('Settings.edit')}}" class="menu-link">
                                         <i class="menu-icon flaticon-interface-8"></i>
@@ -265,6 +265,14 @@ font-family: 'Cairo', sans-serif;">
                                 </a>
                             </li>
                                 @endauth
+                            @auth('customer')
+                                <li class="menu-item" aria-haspopup="true">
+                                    <a href="{{route('Customer.Invoices.checkInvoice',auth('customer')->id())}}" class="menu-link">
+                                        <i class="menu-icon flaticon-interface-8"></i>
+                                        <span class="menu-text">كشف حساب</span>
+                                    </a>
+                                </li>
+                            @endauth
 
                     </ul>
                     <!--end::Menu Nav-->
@@ -858,8 +866,14 @@ font-family: 'Cairo', sans-serif;">
 
             <!--end::Content-->
             <!--begin::Footer-->
+<footer style="">
+    <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer" style="
+    clear: both;
 
-            <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer" style="margin:5% 5% 0 5% ">
+  bottom:10px ;
+  width: 86%;
+  height: 50px;
+         margin:10% 7% 0% 0% ">
                 <!--begin::Container-->
                 <div class="d-flex justify-content-center align-items-end py-7 py-lg-0" >
                     <div class="text-dark-50 font-size-lg font-weight-bolder mr-10">
@@ -872,6 +886,7 @@ font-family: 'Cairo', sans-serif;">
                 </div>
                 <!--end::Container-->
             </div>
+</footer>
             <!--end::Footer-->
         </div>
         <!--end::Wrapper-->

@@ -14,25 +14,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::group(['namespace' => 'Api\Dashboard', 'prefix' => 'Dashboard'], function () {
-    Route::get('/Customers', 'CustomerController@index');
-    Route::post('/Customers/Store', 'CustomerController@store');
-    Route::post('/Customers/Subtype/{id}', 'CustomerController@getType');
-    Route::post('/Customers/update/', 'CustomerController@update');
-    Route::delete('/Customers/delete', 'CustomerController@delete');
-
-    Route::post('/Invoices/', 'InvoiceController@index');
-    Route::post('/Invoices/store', 'InvoiceController@store')->name('Invoices.store');
-    Route::get('/Invoices/Customer/{id}', 'InvoiceController@getInvoice')->name('Invoices.getInvoice');
-    Route::get('/Invoices/{id}/show', 'InvoiceController@show')->name('Invoices.show');
-    Route::get('/Invoices/{id}/edit', 'InvoiceController@edit')->name('Invoices.edit');
-    Route::put('/Invoices/{id}/', 'InvoiceController@update')->name('Invoices.update');
-    Route::delete('/Invoices/delete', 'InvoiceController@destroy')->name('Invoices.destroy');
-    Route::get('Invoices/print/{id}', ['as' => 'invoice.print', 'uses' => 'InvoiceController@printt']);
-    Route::get('Invoices/pdf/{id}', ['as' => 'invoice.pdf', 'uses' => 'InvoiceController@pdf']);
-
-
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+//Route::group(['namespace' => 'Api\Dashboard', 'prefix' => 'Dashboard'], function () {
+//    Route::get('/Customers', 'CustomerController@index');
+//    Route::post('/Customers/Store', 'CustomerController@store');
+//    Route::post('/Customers/Subtype/{id}', 'CustomerController@getType');
+//    Route::post('/Customers/update/', 'CustomerController@update');
+//    Route::delete('/Customers/delete', 'CustomerController@delete');
+//
+//    Route::post('/Invoices/', 'InvoiceController@index');
+//    Route::post('/Invoices/store', 'InvoiceController@store');
+//    Route::get('/Invoices/Customer/{id}', 'InvoiceController@getInvoice');
+//    Route::get('/Invoices/{id}/show', 'InvoiceController@show');
+//    Route::get('/Invoices/{id}/edit', 'InvoiceController@edit');
+//    Route::put('/Invoices/{id}/', 'InvoiceController@update');
+//    Route::delete('/Invoices/delete', 'InvoiceController@destroy');
+////    Route::get('Invoices/print/{id}', ['as' => 'invoice.print', 'uses' => 'InvoiceController@printt']);
+////    Route::get('Invoices/pdf/{id}', ['as' => 'invoice.pdf', 'uses' => 'InvoiceController@pdf']);
+//
+//
+//});

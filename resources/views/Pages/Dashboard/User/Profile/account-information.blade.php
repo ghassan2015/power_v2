@@ -10,29 +10,33 @@
                     <h3 class="card-label font-weight-bolder text-dark"> معلومات الخاصة بالحساب الشخصي</h3>
                     <span class="text-muted font-weight-bold font-size-sm mt-1">تغير معلومات الحساب</span>
                 </div>
-                <form class="form" action="{{route('User.Profile.update',$user->id)}}" method="post">
-                    @csrf
-                    @method('PUT')
                     <div class="card-toolbar">
 
-                        <button type="submit" class="btn btn-success mr-2">تاكيد<span><i
-                                    class="fas fa-check-circle"></i></span></button>
+
                     </div>
             </div>
             <!--end::Header-->
             <!--begin::Form-->
 
+            <form id="form" class="form" action="{{route('User.Profile.update',$user->id)}}" method="post">
+                @csrf
+                @method('PUT')
             <div class="card-body">
                 <!--begin::Heading-->
                 <div class="row" style="text-align: right">
                     <div>
-                        <h5 class="font-weight-bold mb-6">الحساب الشخصي:</h5>
+                        <h5 class="font-weight-bold mb-6">الحساب الشخصي</h5>
                     </div>
                 </div>
                 <!--begin::Form Group-->
                 <div class="form-group row">
-                    <label class="col-xl-3 col-lg-3 col-form-label">Username</label>
+                    <label class="col-xl-3 col-lg-3 col-form-label">الاسم:
+                        <span class="text-danger">*</span>
+                    </label>
+
+
                     <div class="col-lg-9 col-xl-6">
+
                         <div class="input-group input-group-lg input-group-solid">
                             <input class="form-control form-control-lg form-control-solid" name="name" type="text"
                                    value="{{$user->name}}"/>
@@ -44,7 +48,8 @@
                 </div>
                 <!--begin::Form Group-->
                 <div class="form-group row">
-                    <label class="col-xl-3 col-lg-3 col-form-label">Email Address</label>
+                    <label class="col-xl-3 col-lg-3 col-form-label">الايميل الشخصي
+                        <span class="text-danger">*</span></label>
                     <div class="col-lg-9 col-xl-6">
                         <div class="input-group input-group-lg input-group-solid">
 
@@ -57,7 +62,8 @@
 
                     </div>
                 </div>
-
+                <button type="submit" class="btn btn-success mr-2 mb-3" style="float: left">تاكيد<span><i
+                            class="fas fa-check-circle"></i></span></button>
             </div>
 
             </form>
@@ -67,3 +73,35 @@
     </div>
 
 @stop
+@section('js')
+    <script>
+
+        $('#form').validate({
+            errorClass: "error fail-alert",
+            validClass: "valid success-alert",
+            // initialize the plugin
+            rules: {
+                'name': {
+                    required: true
+                },
+                'email': {
+                    required: true,
+                },
+
+                errorClass: "error fail-alert",
+                validClass: "valid success-alert",
+            }
+            ,messages : {
+                'name': {
+                    required:"الرجاء ادخال الاسم"
+                },
+                'email':  {
+                    required: "الرجاء ادخال الايميل",
+                },
+
+            }
+        });
+
+    </script>
+
+@endsection

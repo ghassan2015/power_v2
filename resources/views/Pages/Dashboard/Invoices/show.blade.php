@@ -82,18 +82,21 @@
                                     <tbody>
                                     <tr class="font-weight-boldest font-size-lg">
                                         <td class="pl-0 pt-7">{{$invoice->Customer->full_name}}</td>
-                                        <td class="text-right pt-7">{{$invoice->Customer->kw_price}}</td>
-                                        <td class="text-right pt-7">{{($invoice->current_reading)-($invoice->previous_reading)}}</td>
-                                        <td class="text-danger pr-0 pt-7 text-right">{{$invoice->total_price}}
+                                        <td class="text-center pt-7">{{$invoice->Customer->kw_price}}</td>
+                                        <td class="text-center pt-7">{{($invoice->current_reading)-($invoice->previous_reading)}}</td>
+                                        <td class="text-danger pr-0 pt-7 text-center">{{$invoice->total_price}}
                                             <span><i class="fas fa-shekel-sign" style="color: #000000 ;font-size: 12px"></i></span></td>
-                                        <td class="text-right pt-7">{{($invoice->total_price)-($invoice->remaining)}}    <span><i class="fas fa-shekel-sign" style="color: #000000 ;font-size: 12px"></i></span></td>
+                                        <td class="text-center pt-7">{{($invoice->total_price)-($invoice->remaining)}}    <span><i class="fas fa-shekel-sign" style="color: #000000 ;font-size: 12px"></i></span></td>
 
                                         <td class="text-danger pr-0 pt-7 text-right">
 
                                             @if($invoice->status==2)
                                                 <span class="badge badge-success">مدفوعة</span>
-                                            @else
-                                                <span class="badge badge-danger">  مدفوعة جزئي</span>
+                                            @elseif($invoice->status==1)
+                                                <span class="badge badge-warning">  مدفوعة جزئي</span>
+                                        @else
+                                                <span class="badge badge-danger">  غير مدفوع </span>
+
                                         @endif
 
                                     </tr>

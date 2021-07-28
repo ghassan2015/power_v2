@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Http\Request;
@@ -93,6 +94,12 @@ class InvoiceController extends Controller
         }
         return view('Pages.Customers.Payment.show', compact('Invoice'));
 
+    }
+    public function checkInvoice($id){
+
+       $Customer= Customer::find(auth()->id());
+        $Invoices=Invoice::where('customer_id',auth()->id())->get();
+        return view('Pages.Customers.Invoice.account_value', compact('Invoices','Customer'));
     }
 }
 

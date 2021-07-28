@@ -15,95 +15,90 @@
             </div>
         </div>
             <form action="{{route('Payments.print_Payment')}}" method="get">
-                @csrf
+                    @csrf
+                    <div class="form-group row m-1">
+                        <div class="col-lg-3 ">
+                            <label>اسم المشترك:</label>
+                            <select name="Customer_id" class="form-group row kt_select2_2"
+                                    style="width: 100%"
+                                    id="Customer_id">
+                                <option value=""> المشتركين</option>
+                                @foreach($Customers as $customer)
+                                    <option value="{{$customer->id}}">{{$customer->full_name}}</option>
+                                @endforeach
+                            </select>
+                            @error("Customer_id")
+                            <span class="text-danger"> {{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-lg-3 ">
+                            <label> الشهر :</label>
+                            <select name="Month_Payment" class="form-group row kt_select2_2"
+                                    style="width: 100%" id="Month_Payment">
+                                <option value="">كل الاشهر</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
 
-                <div class="form-group row m-1">
-                    <div class="col-lg-3 ">
-                        <label>اسم الفاتورة:</label>
-                        <select name="Invoice_id" class="form-group row kt_select2_2"
-                                style="width: 100%"
-                                id="Invoice_id">
-                            <option value=""> فاتورة</option>
-                            @foreach($Payments as $payment)
+                            @error('Month')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-lg-3 ">
+                            <label>السنة :</label>
+                            <select name="Years_Payment" class="form-group row kt_select2_2"
+                                    style="width: 100%"
+                                    id="Years_Payment">
+                                <option value="">السنة الحالية</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                            </select>
 
-                                <option value="{{$payment->Invoice->id}}">{{$payment->Invoice->Customer->full_name}}-{{$payment->Invoice->month}}-{{$payment->Invoice->year}}</option>
-                            @endforeach
-                        </select>
-                        @error("Invoice_id")
-                        <span class="text-danger"> {{ $message }}</span>
-                        @enderror
+                            @error('years')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-lg-3 ">
+                            <label>الحالة :</label>
+                            <select name="Status" class="form-group row kt_select2_2"
+                                    style="width: 100%"
+                                    id="Status">
+                                <option value="">كل الحالات</option>
+
+                                <option value="2">مدفوع</option>
+                                <option value="1">مدفوع جزئي</option>
+
+                                <option value="00"> غير مدفوع</option>
+                            </select>
+
+                            @error('years')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                     </div>
-                    <div class="col-lg-3 ">
-                        <label> الشهر :</label>
-                        <select name="Month_Payment" class="form-group row kt_select2_2"
-                                style="width: 100%" id="Month">
-                            <option value="">كل الاشهر</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select>
+                    <div class="row">
+                        <div style="text-align: right;margin: 10px 25px 0 0">
+                            <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
 
-                        @error('Month')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
+
+                            <button class="btn btn-primary" name="pdf">تصدير PDF </button>
+                        </div>
                     </div>
-                    <div class="col-lg-3 ">
-                        <label>السنة :</label>
-                        <select name="years" class="form-group row kt_select2_2"
-                                style="width: 100%"
-                                id="years">
-                            <option value="">السنة الحالية</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                        </select>
-
-                        @error('years')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-lg-3 ">
-                        <label>الحالة :</label>
-                        <select name="Status" class="form-group row kt_select2_2"
-                                style="width: 100%"
-                                id="Status">
-                            <option value="">كل الحالات</option>
-
-                            <option value="2">مدفوع</option>
-                            <option value="1">مدفوع جزئي</option>
-
-                            <option value="0"> غير مدفوع</option>
-                        </select>
-
-                        @error('years')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                </div>
-
-
-                <div class="row">
-                    <div style="text-align: right;margin: 10px 25px 0 0">
-                        <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
-
-
-                        <button class="btn btn-primary" name="pdf">تصدير PDF </button>
-                    </div>
-                </div>
-
-            </form>
+                </form>
 
 
             <div class="card-body">
@@ -212,7 +207,7 @@
 
 
 
-    <@stop
+    @stop
 @section('js')
     <script type="text/javascript">
         $(document).on('click', '.payment', function (e) {
@@ -278,7 +273,7 @@
                     url: "{{route('Payments.get_custom_payment')}}",
                     type: 'GET',
                     "data": function (d) {
-                        d.Invoice_id = $('#Invoice_id').val();
+                        d.Customer_id = $('#Customer_id').val();
                         d.Years_Payment = $('#Years_Payment').val();
                         d.Status = $('#Status').val();
                         d.Month_Payment = $('#Month_Payment').val();

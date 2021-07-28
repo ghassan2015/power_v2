@@ -10,13 +10,14 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 class InvoiceController extends Controller
 {
     public function index(Request $request)
     {
 
-      $Customers=Customer::all();
+        $Customers=Customer::all();
 
         return view('Pages.Dashboard.Invoices.index',compact('Customers'));
     }
@@ -46,7 +47,7 @@ class InvoiceController extends Controller
             }) ->addColumn('k_w_price', function ($data) {
                 return $data->Customer->kw_price;
             })->addColumn('Date', function ($data) {
-                return $data->created_at->format('Y.m.d');
+                return ($data->year).'-'.($data->month);
 
             })->addColumn('Remaining', function ($data) {
                 return $data->remaining;
@@ -84,11 +85,39 @@ class InvoiceController extends Controller
 
     }
         public function create(Request $request){
-            $month=$request->month;
-            $year=$request->year;
-         $Customers=Customer::doesntHave('Invoice')->orWhereHas('Invoice', function($q) use($request){
-                $q->whereNotIn('month',[$request->month])->whereNotIn('year',[$request->year]);
-    })->get();
+
+        $year='';
+        $month='';
+            $year=Carbon::now()->format('Y');
+
+            $month = intval($request->month);
+            $year = $request->year;
+        if(is_null($request->month)) {
+            $month = Carbon::now()->format('m');
+            $year=Carbon::now()->format('Y');
+        }
+            $insertion_date = $year.'-'.$month;
+            $Customers = NULL;
+//            $Customers = DB::table('customers')
+//                ->Join('invoices', 'customers.id', '=', 'invoices.customer_id')
+//                ->where('invoices.month', '<>', $request->month)
+//                ->where('invoices.year', '<>', $request->year)
+//                ->get();
+//            dd($Customers);
+            $customer_ids = Invoice::where('insertion_date', 'LIKE', $insertion_date.'%')->pluck('customer_id')->toArray();
+            $Customers = Customer::query();
+            if(is_array($customer_ids) && sizeof($customer_ids) > 0)
+                $Customers=$Customers->whereNotIn('id', $customer_ids);
+            $Customers = $Customers->get();
+//        $Customers=Customer::doesntHave('Invoice')->orWhereHas('Invoice', function($q) use($request, $insertion_date) {
+//            $q->where('insertion_date', 'NOT LIKE', $insertion_date.'%');
+////             ->where(function ($query) use ($request){
+////                 $query->whereNotIn('year',[$request->year]);
+////             });
+//    })->get();
+            $queries = DB::getQueryLog();
+//        dd($Customers);
+
             return view('Pages.Dashboard.Invoices.Create',compact('Customers','month','year'));
 
         }
@@ -123,6 +152,7 @@ class InvoiceController extends Controller
             $Invoice->remaining=$Total[$key];
             $Invoice->month=$request->month;
             $Invoice->year=$request->year;
+            $Invoice->insertion_date=Carbon::parse($request->year.'-'.$request->month.'-01')->toDateString();
             $Invoice->save();
 
 
@@ -233,7 +263,7 @@ class InvoiceController extends Controller
             }) ->addColumn('k_w_price', function ($data) {
                 return $data->Customer->kw_price;
             })->addColumn('Date', function ($data) {
-                return $data->created_at->format('Y.m.d');
+                return ($data->year).'-'.($data->month);
 
             })->addColumn('Remaining', function ($data) {
                 return $data->remaining;
@@ -302,7 +332,7 @@ class InvoiceController extends Controller
             }) ->addColumn('k_w_price', function ($data) {
                 return $data->Customer->kw_price;
             })->addColumn('Date', function ($data) {
-                return $data->created_at->format('Y.m.d');
+                return ($data->year).'-'.($data->month);
 
             })->addColumn('Remaining', function ($data) {
                 return $data->remaining;
@@ -378,7 +408,7 @@ class InvoiceController extends Controller
             }) ->addColumn('k_w_price', function ($data) {
                 return $data->Customer->kw_price;
             })->addColumn('Date', function ($data) {
-                return $data->created_at->format('Y.m.d');
+                return ($data->year).'-'.($data->month);
 
             })->addColumn('Remaining', function ($data) {
                 return $data->remaining;
@@ -457,9 +487,6 @@ class InvoiceController extends Controller
             $total_kw+=$invoice->total_kw;
             $total_price+=$invoice->total_price;
         }
-
-
-
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;

@@ -11,13 +11,7 @@
                     <!--begin::Card-->
                     <div class="card card-custom gutter-b example example-compact">
                         <div class="card-header">
-                            <h3 class="card-title">تسجيل فاتورة جديد</h3>
-                            <div class="card-toolbar">
-                                <div class="example-tools justify-content-center">
-                                    <span class="example-toggle" data-toggle="tooltip" title="View code"></span>
-                                    <span class="example-copy" data-toggle="tooltip" title="Copy code"></span>
-                                </div>
-                            </div>
+                            <h3 class="card-title">  تعديل  الفاتورة المشترك <span style="margin-right:10px; color: red">{{$invoice->Customer->full_name}}  </span> </h3>
                         </div>
                         <!--begin::Form-->
                         <form class="form" action="{{route('Invoices.update',$invoice->id)}}" method="POST" id="form">
@@ -206,13 +200,20 @@
                         previous_reading_value= previous_reading.val();
 
                     }
-                    var sub_reading=Math.abs(Number(current_reading_value-previous_reading_value));
+                    var sub_reading=Number(current_reading_value-previous_reading_value);
+
+                    if(sub_reading<0) {
+                        alert('قراءة القيمة السابقة هي '+previous_reading_value +'القراءة الحالية اصغر منها');
+                    }else{
+
                     this_item.parent().next().find('.total_kw').val(sub_reading);
 
-                    var price= this_item.next().next().next().next().val();
-                    var min_month_price =this_item.next().next().next().next().val();
+                    var min_month_price = this_item.next().next().next().next().val();
+
+                    var price =this_item.next().next().next().next().next().val();
 
                     var Total=Number(price*sub_reading);
+
 
                     if( Total>min_month_price) {
 
@@ -223,7 +224,8 @@
                         this_item.parent().next().next().find('.total').val(min_month_price);
 
                     }
-                },500);
+                }}
+                ,500);
 
 
 

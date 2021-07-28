@@ -13,17 +13,11 @@
                     <div class="card card-custom gutter-b example example-compact">
                         <div class="card-header">
                             <h3 class="card-title">تعديل بيانات المشترك </h3>
-                            <div class="card-toolbar">
-                                <div class="example-tools justify-content-center">
-                                    <span class="example-toggle" data-toggle="tooltip" title="View code"></span>
-                                    <span class="example-copy" data-toggle="tooltip" title="Copy code"></span>
-                                </div>
-                            </div>
                         </div>
                         <!--begin::Form-->
                         <form  id="form" class="form" action="{{route('Customers.update',$Customer->id)}}" method="POST">
                             @csrf
-@method('PUT')
+                                @method('PUT')
                             <div class="card-body">
                                 <div class="form-group row mg-b-20">
                                     <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
@@ -107,7 +101,6 @@
                                         @foreach($Sub_types as $Sub_type)
                                             <option value="{{$Sub_type->id}}">{{$Sub_type->name}}</option>
                                             @endforeach
-
                                         </select>
                                         @error('subtype_id')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -117,7 +110,7 @@
                                         <label class="form-control-label">سعر الكيلو
                                             <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control @error('price') is-invalid @enderror" name="price"
-                                        value="{{$Customer->Subtype->kw_price}}"
+                                        value="{{$Customer->kw_price}}"
                                         />
                                         @error('price')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -151,6 +144,9 @@
                             </div>
                             <div class="card-footer" style="text-align: end">
                                 <button type="submit" class="btn btn-success font-weight-bold mr-2"><span>تاكيد</span> <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                <a href="{{route('Customers.index')}}" class="btn btn-danger font-weight-bold mr-2"><span>رجوع للخلف
+                                     </span><i class="fas fa-backward"></i></a>
+
                             </div>
                         </form>
                         <!--end::Form-->

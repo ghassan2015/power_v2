@@ -32,7 +32,6 @@ class CustomerRequest extends FormRequest
             'location'=>'required',
             'subtype_id'=>'required',
             'price'=>'required',
-            'meter'=>'required',
             'meter_value'=>'required',
             ];
     }

@@ -32,14 +32,10 @@ Route::group(['namespace' => 'Dashboard', 'prefix' => 'Dashboard','middleware'=>
 
     Route::get('/Customers', 'CustomerController@index')->name('Customers.index');
     Route::get('/Customers/get_custom_Customer', 'CustomerController@get_custom_Customer')->name('Customers.get_custom_Customer');
-
-
     Route::get('/Customers/Create', 'CustomerController@create')->name('Customers.create');
     Route::get('/Customers/{id}/edit', 'CustomerController@edit');
     Route::get('/Customers/{id}/AccountStatement', 'CustomerController@AccountStatement');
     Route::get('/Customers/email/{email}', 'CustomerController@cheackemail');
-
-
     Route::post('/Customers', 'CustomerController@Store')->name('Customers.Store');
     Route::get('/Customers/Subtype/{id}', 'CustomerController@getType');
     Route::put('/Customers/{id}', 'CustomerController@update')->name('Customers.update');
@@ -57,8 +53,6 @@ Route::group(['namespace' => 'Dashboard', 'prefix' => 'Dashboard','middleware'=>
     Route::get('/Invoices/get_unpaid_invoice', 'InvoiceController@get_unpaid_invoice')->name('Invoices.get_unpaid_invoice');
     Route::get('/Invoices/Create', 'InvoiceController@create')->name('Invoices.create');
     Route::get('/Invoices/Serach', 'InvoiceController@Serach')->name('Invoices.serach');
-
-
     Route::post('/Invoices/', 'InvoiceController@store')->name('Invoices.store');
     Route::get('/Invoices/Customer/{id}', 'InvoiceController@getInvoice')->name('Invoices.getInvoice');
     Route::get('/Invoices/{id}/show', 'InvoiceController@show')->name('Invoices.show');
@@ -147,10 +141,13 @@ Route::group(['namespace' => 'Customers', 'prefix' => 'Customers','middleware'=>
     Route::put('Profile/{id}/Update/', 'ProfileController@UpdateProfile')->name('Customer.Profile.update');
     Route::get('changePassword/', 'ProfileController@changePassword')->name('Customer.Profile.password');
     Route::post('Profile/change-password', 'ProfileController@store')->name('change.password');
- Route::get('logout', 'ProfileController@logout')->name('Customer.logout');
+    Route::get('logout', 'ProfileController@logout')->name('Customer.logout');
     Route::get('/Invoices/get_custom_invoice', 'InvoiceController@get_custom_invoice')->name('Customer.Invoices.get_customer_invoice');
     Route::get('/Invoices/', 'InvoiceController@index')->name('Customer.Invoices.index');
-    Route::get('/Invoices/{id}/show', 'InvoiceController@show')->name('Invoices.show');
+    Route::get('/Invoices/{id}/show', 'InvoiceController@show')->name('Customer.Invoices.show');
+
+    Route::get('/Invoices/{id}/check', 'InvoiceController@checkInvoice')->name('Customer.Invoices.checkInvoice');
+
     Route::get('/Invoices/{id}/showPayment', 'InvoiceController@showPayment')->name('Customer.Payments.show');
     Route::get('/Payments/', 'PaymentController@index')->name('Customer.Payments.index');
     Route::get('/Payments/get_custom_payment', 'PaymentController@get_custom_payment')->name('Customer.Payments.get_customer_payment');

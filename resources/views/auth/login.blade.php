@@ -36,7 +36,7 @@
                     <!--begin::Signin-->
                     <div class="login-form login-signin">
                         <!--begin::Form-->
-                        <form class="form" novalidate="novalidate" action="{{route('login')}}" method="post">
+                        <form id="form" class="form"  action="{{route('login')}}" method="post">
                         @csrf
                         <!--begin::Title-->
                             <div class="pb-13 pt-lg-0 pt-5">
@@ -49,7 +49,7 @@
                                 <span class="text-danger">*</span>
                                 <label class="font-size-h6 font-weight-bolder text-dark">الايميل</label>
                                 <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" type="email"
-                                       name="email" required/>
+                                       name="email" />
                                 @error('email')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -99,4 +99,45 @@
         <!--end::Login-->
     </div>
     <!--end::Main-->
+@endsection
+@section('js')
+{{--    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>--}}
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#form').validate({
+            errorClass: "error fail-alert",
+            validClass: "valid success-alert",
+            // initialize the plugin
+            rules: {
+
+                'email': {
+                    required: true,
+                    email: true,
+
+                },
+                'password': {
+                    required: true,
+                },
+
+                errorClass: "error fail-alert",
+                validClass: "valid success-alert",
+
+
+            }
+            , messages: {
+                'password': {
+                    required: "الرجاء ادخال كلمة المرور"
+                },
+                'email': {
+                    required: " الرجاء الايميل المشترك",
+                    email: 'الرجاء ادخل الايميل بطريقة صحيحة',
+
+                },
+
+
+            }
+        })
+    });
+</script>
 @endsection

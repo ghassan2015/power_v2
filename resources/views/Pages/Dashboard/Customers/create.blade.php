@@ -11,12 +11,7 @@
                     <div class="card card-custom gutter-b example example-compact">
                         <div class="card-header">
                             <h3 class="card-title"> مشترك جديد</h3>
-                            <div class="card-toolbar">
-                                <div class="example-tools justify-content-center">
-                                    <span class="example-toggle" data-toggle="tooltip" title="View code"></span>
-                                    <span class="example-copy" data-toggle="tooltip" title="Copy code"></span>
-                                </div>
-                            </div>
+
                         </div>
                         <!--begin::Form-->
                         <form  id="form"class="form" action="{{route('Customers.Store')}}" method="POST">
@@ -84,16 +79,16 @@
                                     <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
                                         <label class="form-control-label">
                                             رقم العداد
-                                            <span class="text-danger">*</span></label>
+                                        </label>
                                         <input type="text" name="meter" class="form-control @error('meter') is-invalid @enderror" />
                                         @error('meter')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
-                                        <label class="form-control-label">القيمة الابتدائية للعداد
+                                        <label class="form-control-label">القيمة الابتدائية للعداد (kw)
                                             <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('meter_value') is-invalid @enderror" name="meter_value" />
+                                        <input type="text" class="form-control @error('meter_value') is-invalid @enderror"  value="0" name="meter_value" />
                                         @error('meter_value')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
@@ -128,7 +123,7 @@
                                 <div class="form-group row mg-b-20">
                                     <div class="col-md-12 mg-t-20 mg-md-t-0" id="lnWrapper">
                                         <label class="form-control-label">الملاحظات
-                                            <span class="text-danger">*</span></label>
+                                         </label>
                                         <textarea class="form-control" name="note"></textarea>
 
                                     </div>
@@ -150,6 +145,9 @@
                             </div>
                             <div class="card-footer" style="text-align: end">
                                 <button type="submit" class="btn btn-success font-weight-bold mr-2"><span>تاكيد</span> <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                <a href="{{route('Customers.index')}}" class="btn btn-danger font-weight-bold mr-2"><span>رجوع للخلف
+                                     </span><i class="fas fa-backward"></i></a>
+
                             </div>
                         </form>
                         <!--end::Form-->
@@ -178,6 +176,7 @@
 
                         $('input[name="price"]').empty();
                         $.each(data, function (key, value) {
+                            $('#email').val('');
                          if(value['email']){
                              Swal.fire(
                                  {
@@ -239,7 +238,9 @@
             // initialize the plugin
             rules: {
                 'name': {
-                    required: true
+                    required: true,
+                    minlength: 3,
+
                 },
                 'email': {
                     required: true,
@@ -250,15 +251,18 @@
                     required: true,
                 },
                 'phone':{
+                    number:true,
                     required: true,
                     minlength: 10,
 
                 },
-                'meter':{
-                    required: true,
-
-                },
+                // 'meter':{
+                //
+                //     required: true,
+                //
+                // },
                 'meter_value':{
+                    number:true,
                     required: true,
 
                 },
@@ -270,6 +274,10 @@
                     required: true,
 
                 },
+                'price':{
+                    required: true,
+                    number:true,
+                },
                 errorClass: "error fail-alert",
                 validClass: "valid success-alert",
 
@@ -278,7 +286,9 @@
             }
             ,messages : {
                 'name': {
-                    required:"الرجاءاسم المشترك"
+                    required:"الرجاءاسم المشترك",
+                    minlength: 'الرجاء كتابة الاسم صحيحة',
+
                 },
                 'email':  {
                     required: " الرجاء الايميل المشترك",
@@ -290,15 +300,20 @@
                 },
                 'phone':{
                     required: " الرجاء هاتف المشترك ",
-                    minlength:'الرجاء ادخل 10 ارقام '
+                    minlength:'الرجاء ادخل 10 ارقام ',
+                    number:'الرجاء ادخال رقم صحيح'
                 },
-                'meter':{
-                    required: 'الرجاء ادخل رقم العداد',
-
+                'price':{
+                    required: "الرجاء ادخال قيمة الكيلو الواحد",
+                    number:'الرجاء ادخال رقم صحيح'
                 },
+                // 'meter':{
+                //     required: 'الرجاء ادخل رقم العداد',
+                //
+                // },
                 'meter_value':{
                     required: 'الرجاء ادخل القيمة الابتدائية للعداد',
-
+                    number:'الرجاء ادخال رقم صحيح'
 
                 },
                 'subtype_id':{

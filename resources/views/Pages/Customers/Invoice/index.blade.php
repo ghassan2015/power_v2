@@ -86,7 +86,6 @@
             <table class="table table-bordered data-table">
                 <thead>
                 <tr>
-                    <th width="2%">#</th>
                     <th width="15%">اسم المشترك</th>
                     <th width="15%">دورة الفاتورة </th>
                     <th width="15%"> قيمة كيلو واط   </th>
@@ -248,7 +247,6 @@
                     }
                 },
                 columns: [
-                    {data:'counter', name: 'counter'},
                     {data: 'Customer', name: 'Customer'},
                     {data: 'Date', name: 'Date'},
                     {data: 'k_w_price', name: 'k_w_price'},
