@@ -26,18 +26,18 @@ class InvoiceController extends Controller
           $counter=Invoice::where('customer_id', $Customer)->get();
 
 
-        if ($request->input('Customer_id')) {
-            $counter = $counter->where("Customer_id", $request->input('Customer_id'));
-        }
+
         if ($request->input('Month_Invoice')) {
-            $counter = $counter->whereMonth("created_at", $request->input('Month_Invoice'));
+            $counter = $counter->where("month", $request->input('Month_Invoice'));
         }
         if ($request->input('years')) {
-            $counter = $counter->whereYear("created_at", $request->input('years'));
+            $counter = $counter->where("year", $request->input('years'));
         }
         if ($request->input('Status')) {
-            $counter = $counter->where("Status", $request->input('Status'));
+            $counter = $counter->where("status", $request->input('Status'));
         }
+
+
         return Datatables::of($counter)
             ->addColumn('ids', function ($counter) {
 

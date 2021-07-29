@@ -39,7 +39,7 @@ return [
     'digits_between' => 'The :attribute must be between :min and :max digits.',
     'dimensions' => 'The :attribute has invalid image dimensions.',
     'distinct' => 'The :attribute field has a duplicate value.',
-    'email' => 'The :attribute must be a valid email address.',
+    'email' => 'The :attribute هذا الايميل غير صحيح',
     'ends_with' => 'The :attribute must end with one of the following: :values.',
     'exists' => 'The selected :attribute is invalid.',
     'file' => 'The :attribute must be a file.',
@@ -151,7 +151,10 @@ return [
         'email'=>'الايميل',
         'password'=>'كلمة المرور',
         'current_password'=>'كلمة المرور الحالية',
-        'new_password'=>'كلمة المرور الجديدة'
+        'new_password'=>'كلمة المرور الجديدة',
+        'full_name'=>'اسم المشترك',
+        'location'=>'العنوان',
+        'mobile'=>'الهاتف'
     ],
 
 ];

@@ -18,7 +18,7 @@
 
         <div class="form-group row m-1">
             <div class="col-lg-4">
-                <label>قيمة العدادالحالية :</label>
+                <label>الشهر :</label>
                 <select name="Month_Invoice" class="form-group row kt_select2_2"
                         style="width: 100%" id="Month">
                     <option value="">كل الاشهر</option>
@@ -41,7 +41,7 @@
                 @enderror
             </div>
             <div class="col-lg-4">
-                <label>قيمة العدادالحالية :</label>
+                <label>السنة الحالية :</label>
                 <select name="years" class="form-group row kt_select2_2"
                         style="width: 100%"
                         id="years">
@@ -59,7 +59,7 @@
             </div>
 
             <div class="col-lg-4">
-                <label>قيمة العدادالحالية :</label>
+                <label>حالة الدفعات:</label>
                 <select name="Status" class="form-group row kt_select2_2"
                         style="width: 100%"
                         id="Status">
@@ -240,7 +240,6 @@
                     url: "{{route('Customer.Invoices.get_customer_invoice')}}",
                     type: 'GET',
                     "data": function (d) {
-                        d.Customer_id = $('#Customer_id').val();
                         d.years = $('#years').val();
                         d.Month_Invoice = $('#Month').val();
                         d.Status = $('#Status').val();

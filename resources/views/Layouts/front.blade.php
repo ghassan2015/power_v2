@@ -72,8 +72,8 @@ font-family: 'Cairo', sans-serif;">
 <!--begin::Header Mobile-->
 <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
     <!--begin::Logo-->
-    <a href="index.html">
-        <img alt="Logo" class="w-45px" src="{{asset('assets/media/logos/logo-letter-13.png')}}" />
+    <a href="{{route('Dashboard.index')}}">
+        <img alt="Logo" class="w-45px" src="{{asset('assets/media/logos/logo.png')}}" />
     </a>
     <!--end::Logo-->
     <!--begin::Toolbar-->
@@ -84,9 +84,9 @@ font-family: 'Cairo', sans-serif;">
         </button>
         <!--end::Aside Mobile Toggle-->
         <!--begin::Header Menu Mobile Toggle-->
-        <button class="btn p-0 burger-icon ml-4" id="kt_header_mobile_toggle">
-            <span></span>
-        </button>
+{{--        <button class="btn p-0 burger-icon ml-4" id="kt_header_mobile_toggle">--}}
+{{--            <span></span>--}}
+{{--        </button>--}}
         <!--end::Header Menu Mobile Toggle-->
         <!--begin::Topbar Mobile Toggle-->
         <button class="btn btn-hover-text-primary p-0 ml-2" id="kt_header_mobile_topbar_toggle">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use Alkoumi\LaravelHijriDate\Hijri;
+use App\Exports\PaymentExecl;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Invoice;
@@ -194,9 +195,14 @@ class PaymentController extends Controller
 
     public function print_Payment(Request $request)
     {
-         $data = Payment::orwhere('invoice_id', $request->Invoice_id)
+     $customer_id = Invoice::where('customer_id',$request->Customer_id)->pluck('id')->toarray();
+     $Status= Invoice::where('status',$request->Status)->pluck('id')->toarray();
+
+        $data = Payment::orwhereIn('invoice_id', $customer_id)
             ->orwhere('month', $request->input('Month_Payment'))
-            ->orwhereYear('year', $request->input('years'))->get();
+            ->orwhere('year', $request->input('Years_Payment'))
+            -> orwhereIn('invoice_id', $Status)
+             ->get();
 
         if($data->count()==0) {
             $data = Payment::get();
@@ -212,9 +218,11 @@ class PaymentController extends Controller
         $mpdf->showWatermarkImage = true;
 
         $mpdf->WriteHTML(view('Pages.Dashboard.Payment.pdf', compact('data','day','history'))->render());
-            $mpdf->Output('كشف الفواتير' . ' ' . ' ' . $request->month . '.pdf', 'I');
+            $mpdf->Output('كشف الدفعات' . ' ' . ' ' . $request->month . '.pdf', 'I');
         }
-
+    public function excel(Request $request){
+        return \Maatwebsite\Excel\Facades\Excel::download(new PaymentExecl($request), 'Payment.xlsx');
+    }
 
 
 }

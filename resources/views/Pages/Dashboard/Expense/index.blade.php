@@ -23,7 +23,7 @@
             </div>
 
         </div>
-        <form action="{{route('Expense.print_Expense')}}" method="get">
+        <form id="filter_form" action="">
             @csrf
         <div class="form-group row m-3">
             <div class="col-lg-4">
@@ -85,9 +85,8 @@
             <div class="row">
                 <div style="text-align: right;margin: 10px 25px 0 0">
                     <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
-
-
-                    <button class="btn btn-primary" name="pdf">تصدير PDF </button>
+                    <button class="btn btn-primary excel" name="pdf">تصدير Excel </button>
+                    <button class="btn btn-primary pdf" name="pdf">تصدير PDF </button>
                 </div>
             </div>
         </form>
@@ -370,6 +369,18 @@
         $('#btnFiterSubmitSearch').click(function () {
             $('.data-table').DataTable().draw(true);
         });
+        $(document).on('click', '.excel', function (e) {
+            e.preventDefault();
+            let _url = "{{route('Expense.excel')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
+        });
 
+        $(document).on('click', '.pdf', function (e) {
+            e.preventDefault();
+            let _url = "{{route('Expense.print_Expense')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
+        });
     </script>
 @endsection

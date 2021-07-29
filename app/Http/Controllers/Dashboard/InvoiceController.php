@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 use Alkoumi\LaravelHijriDate\Hijri;
+use App\Exports\InvoiceExport;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\InvoiceRequest;
@@ -11,7 +12,9 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Excel;
 use Yajra\DataTables\DataTables;
+
 class InvoiceController extends Controller
 {
     public function index(Request $request)
@@ -44,7 +47,10 @@ class InvoiceController extends Controller
             ->addColumn('Customer', function ($data) {
                 return $data->Customer->full_name;
 
-            }) ->addColumn('k_w_price', function ($data) {
+            }) ->addColumn('reminder', function ($data) {
+                return '<input type="checkbox">';
+
+            })->addColumn('k_w_price', function ($data) {
                 return $data->Customer->kw_price;
             })->addColumn('Date', function ($data) {
                 return ($data->year).'-'.($data->month);
@@ -154,8 +160,9 @@ class InvoiceController extends Controller
             $Invoice->year=$request->year;
             $Invoice->insertion_date=Carbon::parse($request->year.'-'.$request->month.'-01')->toDateString();
             $Invoice->save();
-
-
+                $mobile=Customer::find($Customer_ids[$key])->mobile;
+                $message=' يرجى الالتزام بتسديد المبلغ المستحق (مولد الايطالي)'.($Total[$key]).'بقيمة'.($request->month).'عزيزي المشترك قيمة فاتورة المولد لشهر';
+                $this->send($mobile,$message);
 
             }
             toastr()->success('تمت عملية الاضافة بنجاح');
@@ -212,7 +219,7 @@ class InvoiceController extends Controller
                 \App\Models\Invoice::findOrFail($request->id)->delete();
                 toastr()->success('تمت عملية التعديل بنجاح');
             } else {
-                toastr()->error('لم تتم عملية الحذف هذا العنصر بنجاح بسبب وجود ابناء له');
+                toastr()->error('لم تتم عملية الحذف هذا العنصر بنجاح بسبب وجود دفعات ');
 
             }
             return redirect()->back();
@@ -451,7 +458,7 @@ class InvoiceController extends Controller
         $history=Carbon::now()->format('Y-m-d');
         $day=Hijri::Date('l');
         $invoice = Invoice::findOrFail($id);
-    $customer=   $invoice->Customer->full_name;
+         $customer=   $invoice->Customer->full_name;
       $data["receipt"] = Payment::where('invoice_id',$invoice->id)->get();
 
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
@@ -497,6 +504,10 @@ class InvoiceController extends Controller
         $mpdf->Output('كشف الفواتير'.' '.' '.$request->month.'.pdf', 'I');
     }
 
+
+    public function excel(Request $request){
+        return \Maatwebsite\Excel\Facades\Excel::download(new InvoiceExport($request), 'invoices.xlsx');
+    }
 
 
 }

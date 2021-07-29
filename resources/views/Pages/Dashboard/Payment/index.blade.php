@@ -14,7 +14,7 @@
 
             </div>
         </div>
-            <form action="{{route('Payments.print_Payment')}}" method="get">
+        <form id="filter_form" action="">
                     @csrf
                     <div class="form-group row m-1">
                         <div class="col-lg-3 ">
@@ -90,14 +90,14 @@
                         </div>
 
                     </div>
-                    <div class="row">
-                        <div style="text-align: right;margin: 10px 25px 0 0">
-                            <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
+            <div class="row">
+                <div style="text-align: right;margin: 10px 25px 0 0">
+                    <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
 
-
-                            <button class="btn btn-primary" name="pdf">تصدير PDF </button>
-                        </div>
-                    </div>
+                    <button class="btn btn-primary excel" name="pdf">تصدير Excel </button>
+                    <button class="btn btn-primary pdf" name="pdf">تصدير PDF </button>
+                </div>
+            </div>
                 </form>
 
 
@@ -313,6 +313,21 @@
         $('#btnFiterSubmitSearch').click(function (e) {
             $('.data-table').DataTable().draw(true);
             e.preventDefault();
+        });
+        $(document).on('click', '.excel', function (e) {
+            e.preventDefault();
+
+            let _url = "{{route('Payments.excel')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
+        });
+
+        $(document).on('click', '.pdf', function (e) {
+            e.preventDefault();
+
+            let _url = "{{route('Payments.print_Payment')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
         });
     </script>
 

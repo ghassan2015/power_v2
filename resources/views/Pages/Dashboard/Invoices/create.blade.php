@@ -82,7 +82,10 @@
                                     <label>الشهر  :</label>
                                     <span class="text-danger">*</span>
 
-                                    <select class="form-control kt_select2_2   @error('month') is-invalid @enderror"  name="month">
+                                    <select class="form-control kt_select2_2 month_invoice  @error('month') is-invalid @enderror"  name="month">
+                                        @if(!is_null($month))
+                                            <option value="{{is_null($month)?'':$month}}">{{is_null($month)?'':$month}}</option>
+                                        @endif
 
                                         <option value="">كل الاشهر</option>
                                         <option value="01">01</option>
@@ -108,6 +111,9 @@
                                     <span class="text-danger">*</span>
 
                                     <select class="form-control kt_select2_2 year @error('year') is-invalid @enderror" name="year">
+                                        @if(!is_null($year))
+                                            <option value="{{is_null($year)?'':$year}}">{{is_null($year)?'':$year}}</option>
+                                        @endif
                                         <option value="">السنة الحالية</option>
                                         <option value="2021">2021</option>
                                         <option value="2022">2022</option>
@@ -156,7 +162,7 @@
 
                                         <label class="form-control-label"> قيمة العداد بالكيلو واط
                                             <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control total_kw @error('total_kw') is-invalid @enderror" name="total_kw[]"readonly/>
+                                        <input type="text" style="background:#f6f6f6 " class="form-control total_kw @error('total_kw') is-invalid @enderror" name="total_kw[]"readonly/>
                                         @error('total_kw')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
@@ -166,7 +172,7 @@
 
                                         <label class="form-control-label">القيمة المستحقة
                                             <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control total @error('Total') is-invalid @enderror"  name="Total[]" readonly/>
+                                        <input style="background:#f6f6f6 " type="text" class="form-control total @error('Total') is-invalid @enderror"  name="Total[]" readonly/>
                                         @error('Total')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
@@ -204,9 +210,9 @@
                 $('.form_Date').show();
                 var d = new Date();
                 var n = d.getMonth()+1;
-                $('.month').val(n).trigger('change');
+                $('.month_invoice').val(n);
                 var y = d.getFullYear();
-                $('.year').val(y).trigger('change');
+                $('.year').val(y);
             });
             $('.current_reading').on('click',function () {
                 $('.form_search').hide();
@@ -251,6 +257,7 @@
                     }
                     var sub_reading=Number(current_reading_value-previous_reading_value);
                     if(sub_reading<0) {
+                 this_item.val('');
                         alert('قراءة القيمة السابقة هي '+previous_reading_value +'القراءة الحالية اصغر منها');
                     }else {
                         this_item.parent().next().find('.total_kw').val(sub_reading);

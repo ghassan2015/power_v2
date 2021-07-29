@@ -99,8 +99,8 @@
 
                                         <label class="form-control-label">نوع الفاز المشبوك
                                             <span class="text-danger">*</span></label>
-                                        <select class="form-control kt_select2_1 @error('subtype_id') is-invalid @enderror" id="kt_select2_1" name="subtype_id">
-                                            <option >ادخل رقم العداد</option>
+                                        <select class="form-control kt_select2_1"name="subtype_id">
+                                            <option style="direction:">ادخل نوع الاشتراك </option>
 
                                             @foreach($Sub_types as $Sub_type)
                                                 <option value="{{$Sub_type->id}}">{{$Sub_type->name}}</option>

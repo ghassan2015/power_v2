@@ -74,7 +74,7 @@
     @foreach($data as $payment)
 
         <tr class="font-weight-boldest">
-            <th class="pl-0 font-weight-bold text-muted text-uppercase">{{$payment->no_payment}}</th>
+            <th class="pl-0 font-weight-bold text-muted text-uppercase">{{$payment->payment_no}}</th>
             <th class="text-right font-weight-bold text-muted text-uppercase">{{$payment->payment_value}}</th>
             <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">{{$payment->created_at->format('m-d-Y')}}</th>
             <th class="text-right pr-0 font-weight-bold text-muted text-uppercase">{{$payment->User->name}}</th>

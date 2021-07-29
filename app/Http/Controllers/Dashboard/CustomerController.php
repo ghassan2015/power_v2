@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use Alkoumi\LaravelHijriDate\Hijri;
+use App\Exports\CustomerExcel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Requests\CustomerUpdateRequest;
@@ -179,6 +180,9 @@ class CustomerController extends Controller
         $mpdf->showWatermarkImage = true;
         $mpdf->WriteHTML(view('Pages.Dashboard.Invoices.pdf', compact('invoice'))->render());
         $mpdf->Output('قائمة المشتركين '.''.'.pdf', 'I');
+    }
+    public function excel(Request $request){
+        return \Maatwebsite\Excel\Facades\Excel::download(new CustomerExcel($request), 'Customer.xlsx');
     }
 
 }

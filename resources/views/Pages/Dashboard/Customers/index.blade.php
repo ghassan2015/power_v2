@@ -23,7 +23,7 @@
             </div>
 
         </div>
-        <form action="{{route('Customers.pdf')}}" method="get">
+        <form id="filter_form" action="">
             @csrf
         <div class="form-group row m-1">
             <div class="col-lg-4">
@@ -55,10 +55,11 @@
                 <div style="text-align: right;margin: 10px 25px 0 0">
                     <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
 
-
-                    <button class="btn btn-primary" name="pdf">تصدير PDF </button>
+                    <button class="btn btn-primary excel" name="pdf">تصدير Execl </button>
+                    <button class="btn btn-primary pdf" name="pdf">تصدير PDF </button>
                 </div>
             </div>
+
 
         </form>
         <div class="card-body">
@@ -78,7 +79,6 @@
             </table>
         </div>
 
-    </div>
 
     <div id="confirmModal" class="modal fade" role="dialog">
         <div class="modal-dialog" role="document">
@@ -165,6 +165,21 @@
             e.preventDefault();
 
             $('.data-table').DataTable().draw(true);
+        });
+        $(document).on('click', '.excel', function (e) {
+            e.preventDefault();
+
+            let _url = "{{route('Customers.excel')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
+        });
+
+        $(document).on('click', '.pdf', function (e) {
+            e.preventDefault();
+
+            let _url = "{{route('Customers.pdf')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
         });
     </script>
 @endsection

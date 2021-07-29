@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use Alkoumi\LaravelHijriDate\Hijri;
+use App\Exports\ExpenseExecl;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
 use App\Http\Controllers\Controller;
@@ -99,7 +100,9 @@ return  \Yajra\DataTables\DataTables::of($data)
     public function destroy(Request $request)
     {
 
+
         Expense::where('id', $request->id)->delete();
+
         toastr()->success('تمت عملية التعديل بنجاح');
         return redirect()->route('Expense.index');
     }
@@ -127,5 +130,7 @@ foreach ($data as $Expense){
         $mpdf->Output('كشف الفواتير'.' '.' '.$request->month.'.pdf', 'I');
     }
 
-
+    public function excel(Request $request){
+        return \Maatwebsite\Excel\Facades\Excel::download(new ExpenseExecl($request), 'Expense.xlsx');
+    }
 }

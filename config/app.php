@@ -179,6 +179,8 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class,
     Alkoumi\LaravelHijriDate\LaravelHijriDateServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
 
 
     ],
@@ -233,7 +235,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-        'PDF' => Meneses\LaravelMpdf\Facades\LaravelMpdf::class
+        'PDF' => Meneses\LaravelMpdf\Facades\LaravelMpdf::class,
+	'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+
 
     ],
 

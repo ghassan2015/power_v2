@@ -41,6 +41,7 @@ Route::group(['namespace' => 'Dashboard', 'prefix' => 'Dashboard','middleware'=>
     Route::put('/Customers/{id}', 'CustomerController@update')->name('Customers.update');
     Route::delete('/destroy/', 'CustomerController@destroy')->name('Customers.destroy');
     Route::get('/Customers/pdf', 'CustomerController@pdf')->name('Customers.pdf');
+    Route::get('/Customers/excel', 'CustomerController@excel')->name('Customers.excel');
 
 
     Route::get('/Invoices/', 'InvoiceController@index')->name('Invoices.index');
@@ -63,6 +64,7 @@ Route::group(['namespace' => 'Dashboard', 'prefix' => 'Dashboard','middleware'=>
     Route::get('Invoices/pdf/{id}', ['as' => 'invoice.pdf', 'uses' => 'InvoiceController@pdf']);
     Route::get('/Invoices/{id}/print_Invoice_pdf', 'InvoiceController@print_Invoice_pdf')->name('Invoices.print_Invoice_pdf');
     Route::get('/Invoices/print_Invoice', 'InvoiceController@print_Invoice')->name('Invoices.print_Invoice');
+    Route::get('/Invoices/Export/excel', 'InvoiceController@excel')->name('Invoices.excel');
 
 
     Route::get('/Payments/', 'PaymentController@index')->name('Payments.index');
@@ -72,6 +74,7 @@ Route::group(['namespace' => 'Dashboard', 'prefix' => 'Dashboard','middleware'=>
     Route::put('/Payments/', 'PaymentController@update')->name('Payments.update');
     Route::get('/Payments/print_Payment', 'PaymentController@print_Payment')->name('Payments.print_Payment');
     Route::delete('/Payments/', 'PaymentController@destroy')->name('Payments.destroy');
+    Route::get('/Payments/excel', 'PaymentController@excel')->name('Payments.excel');
 
 
     Route::get('/Roles/', 'RoleController@index')->name('Roles.index');
@@ -97,16 +100,13 @@ Route::group(['namespace' => 'Dashboard', 'prefix' => 'Dashboard','middleware'=>
 
     Route::get('Expense', 'ExpenseController@index')->name('Expense.index');
     Route::get('getExpense', 'ExpenseController@getExpense')->name('Expense.getExpense');
-
-
     Route::get('Expense/create', 'ExpenseController@create')->name('Expense.create');
     Route::post('Expense', 'ExpenseController@store')->name('Expense.store');
-    Route::get('Expense/print/pdf', 'ExpenseController@pdf')->name('Expense.print_Expense');
-
     Route::get('Expense/{id}/edit', 'ExpenseController@edit')->name('Expense.edit');
     Route::put('Expense/update/', 'ExpenseController@update')->name('Expense.update');
     Route::delete('Expense/destroy/{id}', 'ExpenseController@destroy')->name('Expense.destroy');
-
+    Route::get('Expense/print/pdf', 'ExpenseController@pdf')->name('Expense.print_Expense');
+    Route::get('Expense/print/excel', 'ExpenseController@excel')->name('Expense.excel');
 
     Route::get('Settings/edit', 'SettingsController@edit')->name('Settings.edit');
    Route::put('Expense/update/{id}', 'SettingsController@update')->name('Settings.Update');

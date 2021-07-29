@@ -102,7 +102,7 @@ class OptionController extends Controller
                 return redirect()->route('Options.index');
 
             } else {
-                toastr()->error('لم تتم عملية الحذف هذا العنصر بنجاح بسبب وجود ابناء له');
+                toastr()->error('لم تتم عملية الحذف هذا العنصر بنجاح بسبب وجود مصاريف تشغيلية له');
                 return redirect()->route('Options.index');
             }
         } catch (\Exception $exception) {

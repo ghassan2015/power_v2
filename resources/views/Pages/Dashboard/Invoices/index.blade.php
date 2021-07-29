@@ -24,8 +24,7 @@
             </div>
 
         </div>
-
-        <form action="{{route('Invoices.print_Invoice')}}" method="get">
+        <form id="filter_form" action="">
             @csrf
         <div class="form-group row m-1">
             <div class="col-lg-3 ">
@@ -101,20 +100,21 @@
                         </div>
 
         </div>
+
         <div class="row">
             <div style="text-align: right;margin: 10px 25px 0 0">
         <button class="btn btn-primary " id="btnFiterSubmitSearch">بحث</button>
-
-
-                <button class="btn btn-primary" name="pdf">تصدير PDF </button>
+                <button class="btn btn-primary excel" name="pdf">تصدير Excel </button>
+                <button class="btn btn-primary pdf" name="pdf">تصدير PDF </button>
             </div>
         </div>
-        </form>
 
+        </form>
             <div class="card-body">
             <table class="table table-bordered data-table">
                 <thead>
                 <tr>
+
                     <th width="12%">اسم المشترك</th>
                     <th width="12%">دورة الفاتورة </th>
                     <th width="14%"> سعر كيلو واط   </th>
@@ -184,12 +184,10 @@
                         @csrf
                         <input id="month" type="hidden" name="month" class="form-control">
                         <input id="year" type="hidden" name="year" class="form-control">
-
                         <input id="Payment_id" type="hidden" name="invoice_id" class="form-control">
                         <div class="form-group">
                             <label for="exampleInputPassword1">  رقم ايصال الدفعة:</label>
                             <span class="text-danger">*</span>
-
                             <input id="payment_no" type="text" name="payment_no" class="form-control payment_no">
                         </div>
                         <div class="form-group">
@@ -248,21 +246,6 @@
             $('#confirmModal').modal('show');
         });
 
-        // $('#ok_button').click(function () {
-        //     $.ajax({
-        //         url: "/Dashboard/Invoice/destroy/" +invoice_id,
-        //         beforeSend: function () {
-        //             $('#ok_button').text('Deleting...');
-        //         }
-        //         ,
-        //         success: function (data) {
-        //             setTimeout(function () {
-        //                 $('#confirmModal').modal('hide');
-        //                 $('.data-table').DataTable().ajax.reload();
-        //             }, 2000);
-        //         }
-        //     })
-        // });
         $(function () {
 
             $.ajaxSetup({
@@ -302,22 +285,7 @@
 
 
         });
-        $(document).ready(function () {
-            $('#invoice_number').hide();
-            $('input[type="radio"]').click(function () {
-                if ($(this).attr('id') == 'type_div') {
-                    $('#invoice_number').hide();
-                    $('#type').show();
-                    $('#start_at').show();
-                    $('#end_at').show();
-                } else {
-                    $('#invoice_number').show();
-                    $('#type').hide();
-                    $('#start_at').hide();
-                    $('#end_at').hide();
-                }
-            });
-        });
+
         $('#btnFiterSubmitSearch').click(function (e) {
             e.preventDefault();
             $('.data-table').DataTable().draw(true);
@@ -351,7 +319,19 @@
                 }
             }
         });
+        $(document).on('click', '.excel', function (e) {
+            e.preventDefault();
+            let _url = "{{route('Invoices.excel')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
+        });
 
+        $(document).on('click', '.pdf', function (e) {
+            e.preventDefault();
+            let _url = "{{route('Invoices.print_Invoice')}}";
+            $('#filter_form').attr('action', _url);
+            $('#filter_form').submit();
+        });
     </script>
 
 @endsection
