@@ -35,10 +35,10 @@ class InvoiceController extends Controller
             $data = $data->where("Customer_id", $request->input('Customer_id'));
         }
         if ($request->input('Month_Invoice')) {
-            $data = $data->whereMonth("created_at", $request->input('Month_Invoice'));
+            $data = $data->where("month", $request->input('Month_Invoice'));
         }
         if ($request->input('years')) {
-            $data = $data->whereYear("created_at", $request->input('years'));
+            $data = $data->where("year", $request->input('years'));
         }
         if ($request->input('Status')) {
             $data = $data->where("status", $request->input('Status'));
@@ -90,19 +90,21 @@ class InvoiceController extends Controller
             ->make(true);
 
     }
-        public function create(Request $request){
+    public function create(Request $request){
 
         $year='';
         $month='';
-            $year=Carbon::now()->format('Y');
-
-            $month = intval($request->month);
             $year = $request->year;
-        if(is_null($request->month)) {
-            $month = Carbon::now()->format('m');
-            $year=Carbon::now()->format('Y');
-        }
-            $insertion_date = $year.'-'.$month;
+            $month = $request->month;
+
+            if(is_null($request->month)) {
+                $month = Carbon::now()->format('m');
+                $year=Carbon::now()->format('Y');
+            }
+
+            $month = intval($month);
+
+             $insertion_date = $year.'-'.'0'.$month;
             $Customers = NULL;
 //            $Customers = DB::table('customers')
 //                ->Join('invoices', 'customers.id', '=', 'invoices.customer_id')
@@ -110,34 +112,22 @@ class InvoiceController extends Controller
 //                ->where('invoices.year', '<>', $request->year)
 //                ->get();
 //            dd($Customers);
-            $customer_ids = Invoice::where('insertion_date', 'LIKE', $insertion_date.'%')->pluck('customer_id')->toArray();
+           $customer_ids = Invoice::where('insertion_date', 'LIKE', $insertion_date.'%')->pluck('customer_id')->toArray();
             $Customers = Customer::query();
             if(is_array($customer_ids) && sizeof($customer_ids) > 0)
                 $Customers=$Customers->whereNotIn('id', $customer_ids);
             $Customers = $Customers->get();
-//        $Customers=Customer::doesntHave('Invoice')->orWhereHas('Invoice', function($q) use($request, $insertion_date) {
-//            $q->where('insertion_date', 'NOT LIKE', $insertion_date.'%');
-////             ->where(function ($query) use ($request){
-////                 $query->whereNotIn('year',[$request->year]);
-////             });
-//    })->get();
-            $queries = DB::getQueryLog();
 //        dd($Customers);
-
             return view('Pages.Dashboard.Invoices.Create',compact('Customers','month','year'));
 
         }
-
-
-
-
-
-
-
-
     public function store(Request $request){
-
-
+        $month='';
+        $month=$request->month;
+        if(is_null($request->month)) {
+            $month = Carbon::now()->format('m');
+        }
+//     return   Carbon::parse($request->year.'-'.$request->month.'-01')->toDateString();
      $data = $request->except('_token');
         $Customer_ids = $data['customer_id'];
         $previous_reading = $data['previous_reading'];
@@ -145,10 +135,8 @@ class InvoiceController extends Controller
         $current_reading = $data['current_reading'];
         $total_kw=$data['total_kw'];
         $Total = $data['Total'];
-
         try {
             foreach ($Customer_ids as $key => $value) {
-
             $Invoice = new Invoice();
             $Invoice->customer_id  = $Customer_ids[$key];
             $Invoice->previous_reading = is_null($previous_reading[$key])?$current_customer[$key]:$previous_reading[$key];
@@ -156,19 +144,19 @@ class InvoiceController extends Controller
             $Invoice->total_price = $Total[$key];
             $Invoice->total_kw=$total_kw[$key];
             $Invoice->remaining=$Total[$key];
-            $Invoice->month=$request->month;
+            $Invoice->month=$month;
             $Invoice->year=$request->year;
-            $Invoice->insertion_date=Carbon::parse($request->year.'-'.$request->month.'-01')->toDateString();
+            $Invoice->insertion_date=Carbon::parse($request->year.'-'.$month.'-01')->toDateString();
             $Invoice->save();
-                $mobile=Customer::find($Customer_ids[$key])->mobile;
-                $message=' يرجى الالتزام بتسديد المبلغ المستحق (مولد الايطالي)'.($Total[$key]).'بقيمة'.($request->month).'عزيزي المشترك قيمة فاتورة المولد لشهر';
-                $this->send($mobile,$message);
-
+//                $mobile=Customer::find($Customer_ids[$key])->mobile;
+//                $message=' يرجى الالتزام بتسديد المبلغ المستحق (مولد الايطالي)'.($Total[$key]).'بقيمة'.($request->month).'عزيزي المشترك قيمة فاتورة المولد لشهر';
+//                $this->send($mobile,$message);
             }
             toastr()->success('تمت عملية الاضافة بنجاح');
             return redirect()->route('Invoices.index');
 
         } catch (\Exception $exception) {
+            return $exception;
             toastr()->error('لم يتم اضافة الفاتورة');
 
             return redirect()->route('Invoices.index');
@@ -184,7 +172,7 @@ class InvoiceController extends Controller
         $invoice=Invoice::findorfail($id);
         return view('Pages.Dashboard.Invoices.edit',compact('invoice'));
     }
-        public function update(Request $request,$id){
+    public function update(Request $request,$id){
         try {
             $Invoice=Invoice::findOrFail($id);
             $Invoice->customer_id  = $request->customer_id;
@@ -232,14 +220,11 @@ class InvoiceController extends Controller
 
 
     }
-
     public function getInvoice($id){
         $invoice=Invoice::where('Customer_id',$id)->latest()->get();
         return $invoice;
     }
-
     public function fullPayment(){
-
         $Customers=Customer::all();
 
         return view('Pages.Dashboard.Invoices.fullPayment_invoice',compact('Customers'));
@@ -451,7 +436,6 @@ class InvoiceController extends Controller
             ->make(true);
 
     }
-
     public function print_Invoice_pdf($id)
     {
 
@@ -477,13 +461,84 @@ class InvoiceController extends Controller
         $date=Hijri::Date('l');                         // Without Defining Timestamp It will return Hijri Date of [NOW]  => Results "الجمعة ، 12 ربيع الآخر ، 1442"
 
         $data='';
-        $data = Invoice::orwhere('customer_id', $request->input('Customer_id'))
-            ->orwhere('month', $request->input('Month_Invoice'))
-            ->orwhere('year', $request->input('years'))->get();
-        if($data->count()==0) {
-            $data = Invoice::get();
-
+      if(isset($request->Customer_id) && isset($request->Month_Invoice)&& isset($request->years)&&isset($request->Status)) {
+            $data = Invoice::where('customer_id', $request->input('Customer_id'))
+                ->where('month', $request->input('Month_Invoice'))
+                ->where('year', $request->input('years'))
+                ->where('status', $request->input('Status'))->get();
         }
+        else  if(isset($request->Customer_id) && isset($request->Month_Invoice)&& isset($request->years)) {
+            $data = Invoice::where('customer_id', $request->input('Customer_id'))
+                ->where('month', $request->input('Month_Invoice'))
+                ->where('year', $request->input('years'))->get();
+        }
+        else if(isset($request->Status) && isset($request->Month_Invoice)&& isset($request->years)) {
+            $data = Invoice::where('year', $request->input('years'))
+                ->where('month', $request->input('Month_Invoice'))
+                ->where('status', $request->input('Status'))->get();
+        }
+        else if(isset($request->Status) && isset($request->Customer_id)&& isset($request->years)) {
+            $data = Invoice::where('year', $request->input('years'))
+                ->where('customer_id', $request->input('Customer_id'))
+                ->where('status', $request->input('Status'))->get();
+        }
+        else if(isset($request->Status) && isset($request->Customer_id)&& isset($request->Month_Invoice)) {
+            $data = Invoice::where('month', $request->input('Month_Invoice'))
+                ->where('customer_id', $request->input('Customer_id'))
+                ->where('status', $request->input('Status'))->get();
+        }
+        else if(isset($request->Status) && isset($request->years)&& isset($request->Month_Invoice)) {
+        $data = Invoice::where('month', $request->input('Month_Invoice'))
+            ->where('year', $request->input('years'))
+            ->where('status', $request->input('Status'))->get();
+        }
+        else if(isset($request->Customer_id) && isset($request->years)){
+            $data = Invoice::where('customer_id', $request->input('Customer_id'))
+                ->where('year', $request->input('years'))->get();
+        }else if(isset($request->Customer_id) && isset($request->Month_Invoice)){
+            $data = Invoice::where('customer_id', $request->input('Customer_id'))
+                ->where('month', $request->input('Month_Invoice'))->get();
+        }
+        else if(isset($request->Customer_id) && isset($request->years)){
+            $data = Invoice::where('customer_id', $request->input('Customer_id'))
+                ->where('year', $request->input('years'))->get();
+        }
+        else if(isset($request->Customer_id) && isset($request->Status)){
+            $data = Invoice::where('customer_id', $request->input('Customer_id'))
+                ->where('status', $request->input('Status'))->get();
+        }
+        else if(isset($request->years) && isset($request->Month_Invoice)){
+            $data = Invoice::where('year', $request->input('years'))
+                ->where('month', $request->input('Month_Invoice'))->get();
+        }
+        else if(isset($request->Status) && isset($request->Month_Invoice)){
+            $data = Invoice::where('status', $request->input('Status'))
+                ->where('month', $request->input('Month_Invoice'))->get();
+        }
+        else if(isset($request->Status) && isset($request->years)){
+            $data = Invoice::where('status', $request->input('Status'))
+                ->where('year', $request->input('years'))->get();
+        }
+        else if(isset($request->Customer_id)) {
+            $data = Invoice::where('customer_id', $request->input('Customer_id'))->get();
+        }
+        else if(isset($request->Month_Invoice)) {
+            $data = Invoice::where('month', $request->input('Month_Invoice'))->get();
+        }
+        else if(isset($request->years)) {
+            $data = Invoice::where('year', $request->input('years'))->get();
+        }
+        else if(isset($request->Status)) {
+            $data = Invoice::where('status', $request->input('Status'))->get();
+        }
+
+else{
+    $data=Invoice::get();
+}
+    //        if($data->count()==0) {
+//            $data = Invoice::get();
+//
+//        }
         $current_reading=0;
         $previous_reading=0;
         $total_kw=0;

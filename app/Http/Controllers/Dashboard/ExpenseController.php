@@ -108,12 +108,36 @@ return  \Yajra\DataTables\DataTables::of($data)
     }
     public function pdf(Request $request){
         $data='';
-        $data = Expense::orwhere('option_id', $request->input('Option_id'))
-            ->orwhereMonth("created_at", $request->input('Month_Expense'))
-            ->orwhere('created_at', $request->input('Year_Expense'))->get();
-         if($data->count()==0) {
-            $data = Expense::get();
-          }
+        if(isset($request->Option_id) && isset($request->Month_Expense)&& isset($request->Year_Expense))
+        {
+            $data = Expense::where('option_id', $request->input('Option_id'))
+                ->whereMonth("created_at", $request->input('Month_Expense'))
+                ->whereYear('created_at', $request->input('Year_Expense'))->get();
+        }else if(isset($request->Option_id) && isset($request->Month_Expense)){
+            $data = Expense::where('option_id', $request->input('Option_id'))
+                ->whereMonth("created_at", $request->input('Month_Expense'))->get();
+        }else if(isset($request->Option_id) && isset($request->Year_Expense)){
+            $data = Expense::where('option_id', $request->input('Option_id'))
+                ->whereYear('created_at', $request->input('Year_Expense'))->get();
+        }else if (isset($request->Month_Expense) && isset($request->Year_Expense)){
+            $data = Expense:: whereMonth("created_at", $request->input('Month_Expense'))
+                ->whereYear('created_at', $request->input('Year_Expense'))->get();
+        }else if(isset($request->Month_Expense) ){
+            $data = Expense:: whereMonth("created_at", $request->input('Month_Expense'))->get();
+        }else if(isset($request->Year_Expense) ){
+            $data = Expense::whereYear('created_at', $request->input('Year_Expense'))->get();
+
+        }else if(isset($request->Option_id) ){
+            $data = Expense::where('option_id', $request->input('Option_id'))->get();
+        }else{
+            $data=Expense::get();
+        }
+//            $data = Expense::where('option_id', $request->input('Option_id'))
+//            ->orwhereMonth("created_at", $request->input('Month_Expense'))
+//            ->orwhere('created_at', $request->input('Year_Expense'))->get();
+//         if($data->count()==0) {
+//            $data = Expense::get();
+//          }
         $total_price=0;
 foreach ($data as $Expense){
     $total_price+=$Expense->price_expenses;
@@ -127,7 +151,7 @@ foreach ($data as $Expense){
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
         $mpdf->WriteHTML(view('Pages.Dashboard.Expense.print', compact('data','total_price','day','history'))->render());
-        $mpdf->Output('كشف الفواتير'.' '.' '.$request->month.'.pdf', 'I');
+        $mpdf->Output('كشف المصاريف التشغيلية'.' '.' '.$request->month.'.pdf', 'I');
     }
 
     public function excel(Request $request){

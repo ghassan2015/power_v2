@@ -36,11 +36,9 @@ class RoleController extends Controller
                 ->addColumn('action', function ($data) {
 
 
-                    $button = '<a name="edit" href="' . url("/Dashboard/Roles/$data->id/show") . '" . id="' . $data->id . '" class="edit btn btn-secondary btn-sm"><span><i class="fa fa-eye" aria-hidden="true"></i></span>عرض</a>';
-                    $button .= '&nbsp;&nbsp';
-                    $button = $button . '<a name="edit" href="' . url("/Dashboard/Roles/$data->id/edit") . '" . id="' . $data->id . '" class="edit btn btn-primary btn-sm"><span><i class="fas fa-edit"></i></span>تعديل</a>';
+                    $button =  '<a name="edit" href="' . url("/Dashboard/Roles/$data->id/edit") . '" . id="' . $data->id . '" class="edit"><span><i class="fas fa-edit"></i></span></a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm"><span><i class="fas fa-trash-alt"></i></span>حدف</button>';
+                    $button .= '<a  name="delete" id="' . $data->id . '" class="delete"><span><i class="fas fa-trash-alt"></i></span></a>';
                     return $button;
 
 
@@ -78,7 +76,7 @@ class RoleController extends Controller
         $rolePermissions = Permission::join("role_has_permissions", "role_has_permissions.permission_id", "=", "permissions.id")
             ->where("role_has_permissions.role_id", $id)
             ->get();
-        return view('Pages.Dashboard.Role.show', compact('role', 'rolePermissions'));
+    //    return view('Pages.Dashboard.Role.show', compact('role', 'rolePermissions'));
     }
 
     public function edit($id)

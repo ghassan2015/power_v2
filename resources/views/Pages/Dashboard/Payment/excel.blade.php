@@ -13,7 +13,7 @@
         <tr>
             <td>{{ $payment->payment_no }}</td>
             <td>{{ $payment->Invoice->Customer->full_name }}</td>
-            <th>{{$payment->paid}}</th>
+            <th>{{$payment->payment_value}}</th>
             <td>{{$payment->Invoice->insertion_date }}</td>
             <td>{{ $payment->User->name }}</td>
 

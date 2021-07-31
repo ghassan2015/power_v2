@@ -75,14 +75,11 @@
                                         <div class="col-md-3 mg-t-20 mg-md-t-0 test" id="lnWrapper">
                                             {{--                                        <input type="hidden" value="24" class="form-control previous_read @error('previous_reading') is-invalid @enderror" name="previous_reading"/>--}}
 
-                                            <label class="form-control-label"> القراءة الحالية
-                                                <span class="text-danger">*</span></label>
+                                            <label class="form-control-label"> القراءة الحالية<span class="text-danger">*</span></label>
                                             <input type="text" value="{{$invoice->current_reading}}" class="form-control current_reading " name="current_reading"/>
-                                            <input type="hidden"  class="form-control previous_reading @error('previous_reading') is-invalid @enderror"  name="previous_reading"/>
-                                            <input type="hidden"  class="form-control current_customer @error('current_customer') is-invalid @enderror" name="current_customer" value="{{$invoice->Customer->kw_meter_value}}"/>
+                                            <input type="text"  class="form-control previous_reading @error('previous_reading') is-invalid @enderror"  name="previous_reading"/>
                                             <input type="hidden" value="{{$invoice->Customer->id}}" name="customer_id">
                                             <input type="hidden" value="{{$invoice->Customer->Subtype->min_month_price}}" name="min_month_price">
-
                                             <input type="hidden"  class="form-control price_customer @error('price_customer') is-invalid @enderror" name="price_customer"
 
                                                    value="{{$invoice->Customer->kw_price}}"/>
@@ -138,7 +135,6 @@
                 var this_item = $(this);
                 var previous_reading='';
                 var Customer_id = $(this).val();
-                var previous_reading_customer=$('.previous_reading_customer').val();
                 if (Customer_id) {
                     $.ajax({
                         url: "{{ URL::to('Dashboard/Invoices/Customer') }}/" + Customer_id,
@@ -171,9 +167,8 @@
                 var this_item = $(this);
 
                 var previous_reading='';
-                var Customer_id = $(this).next().next().next().val();
-                //   console.log(Customer_id);
-                var previous_reading_customer=$('.previous_reading_customer').val();
+                var Customer_id = $(this).next().next().val();
+                console.log('customer_id'+Customer_id);
                 if (Customer_id) {
                     $.ajax({
                         url: "{{ URL::to('Dashboard/Invoices/Customer') }}/" + Customer_id,
@@ -198,24 +193,20 @@
 
                     }else{
                         previous_reading_value= previous_reading.val();
-
                     }
                     var sub_reading=Number(current_reading_value-previous_reading_value);
 
                     if(sub_reading<0) {
                         alert('قراءة القيمة السابقة هي '+previous_reading_value +'القراءة الحالية اصغر منها');
                     }else{
-
-                    this_item.parent().next().find('.total_kw').val(sub_reading);
-
-                    var min_month_price = this_item.next().next().next().next().val();
-
-                    var price =this_item.next().next().next().next().next().val();
-
+                    var min_month_price = this_item.next().next().next().val();
+                    var price =this_item.next().next().next().next().val();
                     var Total=Number(price*sub_reading);
+                        console.log('price'+price);
 
+                        this_item.parent().next().find('.total_kw').val(sub_reading);
 
-                    if( Total>min_month_price) {
+                        if( Total>min_month_price) {
 
 
                         this_item.parent().next().next().find('.total').val(Total);

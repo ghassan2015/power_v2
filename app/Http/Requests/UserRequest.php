@@ -28,7 +28,7 @@ class UserRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email|unique:users,email',$this->user()->id,
             'password' => 'required|same:confirm-password',$this->user()->id,
-            'roles_name'=>'required'
+            'roles_name' => 'required'
         ];
     }
 }

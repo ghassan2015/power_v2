@@ -50,15 +50,13 @@ class UserController extends Controller
         return view('Pages.Dashboard.User.Add__user', compact('roles'));
     }
 
-    public function store(UserRequest $request)
+    public function store(Request $request)
     {
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'roles_name' => $request->roles_name,
-            'status' => $request->Status,
         ]);
         $user->assignRole($request->input('roles_name'));
 

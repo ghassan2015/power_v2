@@ -19,6 +19,8 @@ class CreatePaymentsTable extends Migration
             $table->foreignId('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('payment_value');
+            $table->integer('month');
+            $table->integer('year');
             $table->timestamps();
         });
     }

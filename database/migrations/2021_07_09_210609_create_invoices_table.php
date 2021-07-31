@@ -24,6 +24,7 @@ class CreateInvoicesTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->integer('month');
             $table->integer('year');
+            $table->date('insertion_date');
             $table->timestamps();
         });
     }

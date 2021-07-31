@@ -30,15 +30,15 @@
                                                 <option value="{{is_null($month)?'':$month}}">{{is_null($month)?'':$month}}</option>
                                             @endif
                                             <option value="">كل الاشهر</option>
-                                            <option value="01">1</option>
-                                            <option value="02">2</option>
-                                            <option value="03">3</option>
-                                            <option value="04">4</option>
-                                            <option value="05">5</option>
-                                            <option value="06">6</option>
-                                            <option value="07">7</option>
-                                            <option value="08">8</option>
-                                            <option value="09">9</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
                                             <option value="10">10</option>
                                             <option value="11">11</option>
                                             <option value="12">12</option>
@@ -82,21 +82,19 @@
                                     <label>الشهر  :</label>
                                     <span class="text-danger">*</span>
 
-                                    <select class="form-control kt_select2_2 month_invoice  @error('month') is-invalid @enderror"  name="month">
-                                        @if(!is_null($month))
-                                            <option value="{{is_null($month)?'':$month}}">{{is_null($month)?'':$month}}</option>
-                                        @endif
+                                    <select class="form-control kt_select2_2   @error('month') is-invalid @enderror"  name="month">
+                                            <option value="{{intval($month)}}">{{$month}}</option>
 
                                         <option value="">كل الاشهر</option>
-                                        <option value="01">01</option>
-                                        <option value="02">02</option>
-                                        <option value="03">3</option>
-                                        <option value="04">4</option>
-                                        <option value="05">5</option>
-                                        <option value="06">6</option>
-                                        <option value="07">7</option>
-                                        <option value="08">8</option>
-                                        <option value="09">9</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
                                         <option value="10">10</option>
                                         <option value="11">11</option>
                                         <option value="12">12</option>

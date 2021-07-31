@@ -28,7 +28,7 @@
         <div class="form-group row m-3">
             <div class="col-lg-4">
                 <label>نوع المصاريف:</label>
-                <select name="Month_Expense" class="form-group row kt_select2_2"
+                <select name="Option_id" class="form-group row kt_select2_2"
                         style="width: 100%"
                         id="Option_type">
                     <option value=""> نوع المصاريف</option>
@@ -314,11 +314,7 @@
 
             $('.Option_id').val(Option_id).trigger('change');
 
-            // $('#Option_id').append(`<option value="${Option_id}">
-            //                            ${Option_Name}
-            //                       </option>`).prop('selected');
-            // var Expense_id = $(this).attr('id');
-            // $('#id').val(Expense_id);
+
 
         });
 
@@ -366,18 +362,18 @@
                 });
             }, false);
         })();
-        $('#btnFiterSubmitSearch').click(function () {
+        $('#btnFiterSubmitSearch').click(function (e) {
+            e.preventDefault();
+
             $('.data-table').DataTable().draw(true);
         });
         $(document).on('click', '.excel', function (e) {
-            e.preventDefault();
             let _url = "{{route('Expense.excel')}}";
             $('#filter_form').attr('action', _url);
             $('#filter_form').submit();
         });
 
         $(document).on('click', '.pdf', function (e) {
-            e.preventDefault();
             let _url = "{{route('Expense.print_Expense')}}";
             $('#filter_form').attr('action', _url);
             $('#filter_form').submit();

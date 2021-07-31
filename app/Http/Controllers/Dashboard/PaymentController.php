@@ -79,7 +79,7 @@ class PaymentController extends Controller
 
                 $button = $button . '<a name="edit"  id="' . $data->id . '" payment_value="' . $data->payment_value . '" month="'.$data->month.'" year="'.$data->year.'"invoice_id="' . $data->Invoice->id . '" Name_Invoice="' . $data->Invoice->Customer->full_name . '" class="payment"><span><i class="fas fa-edit"></i></span></a>';
                 $button .= '&nbsp;&nbsp;&nbsp;&nbsp;';
-                $button .= '<a type="button" name="delete"  Name_Delete="'.$data->no_payment.'"id="' . $data->id . '" class="delete"><span><i class="fas fa-trash-alt"></i></span></a>';
+                $button .= '<a type="button" name="delete"  Name_Delete="'.$data->payment_no.'"id="' . $data->id . '" class="delete"><span><i class="fas fa-trash-alt"></i></span></a>';
                 return $button;
 
             })->rawColumns(['action'])
@@ -90,13 +90,12 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
 
-
         try {
             $Invoice_Payment = Invoice::find($request->invoice_id);
             $remain = $Invoice_Payment->remaining;
             if ($remain >= $request->payment_value) {
                 $Payment = new Payment();
-                $Payment->no_payment = $request->payment_no;
+                $Payment->payment_no = $request->payment_no;
                 $Payment->invoice_id = $request->invoice_id;
                 $Payment->month = $request->month;
                 $Payment->year = $request->year;
@@ -126,6 +125,7 @@ class PaymentController extends Controller
             }
             return redirect()->route('Invoices.index');
         } catch (\Exception $exception) {
+            return $exception;
             toastr()->error('لم يتم حفظ البيانات بنجاح');
             return redirect()->route('Invoices.index');
 
@@ -198,16 +198,99 @@ class PaymentController extends Controller
      $customer_id = Invoice::where('customer_id',$request->Customer_id)->pluck('id')->toarray();
      $Status= Invoice::where('status',$request->Status)->pluck('id')->toarray();
 
-        $data = Payment::orwhereIn('invoice_id', $customer_id)
-            ->orwhere('month', $request->input('Month_Payment'))
-            ->orwhere('year', $request->input('Years_Payment'))
-            -> orwhereIn('invoice_id', $Status)
-             ->get();
 
-        if($data->count()==0) {
-            $data = Payment::get();
+        if(isset($request->Customer_id) && isset($request->Month_Payment)&& isset( $request->Years_Payment)&&isset($request->Status)) {
+            $data = Payment::whereIn('invoice_id', $customer_id)
+                ->where('month',$request->Month_Payment)
+                ->where('year',$request->Years_Payment)
+                ->whereIn('invoice_id', $Status)
+                ->get();
 
         }
+        else  if(isset($request->Customer_id) && isset($request->Month_Payment)&& isset($request->Years_Payment)) {
+            $data = Payment::orwhereIn('invoice_id', $customer_id)
+                ->where('month',$request->Month_Payment)
+                ->where('year',$request->Years_Payment)
+                ->get();
+        }
+        else if(isset($request->Status) && isset($request->Month_Payment)&& isset($request->Years_Payment)) {
+            $data = Payment::where('month',$request->Month_Payment)
+                ->where('year',$request->Years_Payment)
+                ->whereIn('invoice_id', $Status)
+                ->get();
+        }
+        else if(isset($request->Status) && isset($request->Customer_id)&& isset($request->Years_Payment)) {
+            $data = Payment::whereIn('invoice_id', $customer_id)
+                ->where('year',$request->Years_Payment)
+                ->whereIn('invoice_id', $Status)
+                ->get();
+        }
+        else if(isset($request->Status) && isset($request->Customer_id)&& isset($request->Month_Payment)) {
+            $data = Payment::orwhereIn('invoice_id', $customer_id)
+                ->where('month',$request->Month_Payment)
+                ->whereIn('invoice_id', $Status)
+                ->get();
+        }
+        else if(isset($request->Status) && isset($request->Years_Payment)&& isset($request->Month_Payment)) {
+            $data = Payment::here('month',$request->Month_Payment)
+                ->where('year',$request->Years_Payment)
+                ->whereIn('invoice_id', $Status)
+                ->get();
+        }
+        else if(isset($request->Customer_id) && isset($request->Years_Payment)){
+            $data = Payment::whereIn('invoice_id', $customer_id)
+                ->where('year',$request->Years_Payment)
+                ->get();
+        }
+        else if(isset($request->Customer_id) && isset($request->Month_Payment)){
+            $data = Payment::whereIn('invoice_id', $customer_id)
+                ->where('month',$request->Month_Payment)
+                ->get();
+        }
+        else if(isset($request->Customer_id) && isset($request->Years_Payment)){
+            $data = Payment::whereIn('invoice_id', $customer_id)
+                ->where('year',$request->Years_Payment)
+                ->get();
+        }
+        else if(isset($request->Customer_id) && isset($request->Status)){
+            $data = Payment::whereIn('invoice_id', $customer_id)
+                ->whereIn('invoice_id', $Status)
+                ->get();
+        }
+        else if(isset($request->Years_Payment) && isset($request->Month_Payment)){
+            $data = Payment::where('month',$request->Month_Payment)
+                ->where('year',$request->Years_Payment)
+                ->get();
+        }
+        else if(isset($request->Status) && isset($request->Month_Payment)){
+            $data = Payment::where('month',$request->Month_Payment)
+                ->whereIn('invoice_id', $Status)
+                ->get();
+        }
+        else if(isset($request->Status) && isset($request->Years_Payment)){
+            $data = Payment::where('year',$request->Years_Payment)
+                ->whereIn('invoice_id', $Status)
+                ->get();
+        }
+        else if(isset($request->Customer_id)) {
+            $data = Payment::whereIn('invoice_id', $customer_id)->get();
+        }
+        else if(isset($request->Month_Payment)) {
+            $data = Payment::where('month',$request->Month_Payment)
+                ->get();
+        }
+        else if(isset($request->Years_Payment)) {
+            $data = Payment::where('year',$request->Years_Payment)
+                ->get();        }
+        else if(isset($request->Status)) {
+            $data = Payment::whereIn('invoice_id', $Status)
+                ->get();
+        }
+
+        else{
+            $data=Payment::get();
+        }
+
         $history=Carbon::now()->format('Y-m-d');
         $day=Hijri::Date('l');
 

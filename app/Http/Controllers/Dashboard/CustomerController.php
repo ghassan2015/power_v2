@@ -148,12 +148,31 @@ class CustomerController extends Controller
         $data='';
         $history=Carbon::now()->format('Y-m-d');
         $day=Hijri::Date('l');
-        $data = Customer::orwhere('full_name', $request->input('full_name'))
-                ->orwhere('email', $request->input('email'))
-                ->orwhere('mobile', $request->input('mobile'))->get();
-        if($data->count()==0){
-          $data=Customer::get();
+        if(isset($request->full_name) && isset($request->email)&& isset($request->mobile)) {
+            $data = Customer::where('full_name', $request->input('full_name'))
+                ->where('email', $request->input('email'))
+                ->where('mobile', $request->input('mobile'))->get();
+        }else  if(isset($request->full_name) && isset($request->email)){
+            $data = Customer::where('full_name', $request->input('full_name'))
+                ->where('email', $request->input('email'))
+                ->get();
+        } else if (isset($request->full_name) && isset($request->mobile)){
+            $data = Customer::where('full_name', $request->input('full_name'))
+                ->where('mobile', $request->input('mobile'))->get();
+        }else if(isset($request->email)&& isset($request->mobile)){
+            $data=  Customer::where('email', $request->input('email'))
+                ->where('mobile', $request->input('mobile'))->get();
+        }   else if (isset($request->full_name)) {
+            $data = Customer::where('full_name', $request->input('full_name'))->get();
         }
+        else if (isset($request->email)){
+            $data=  Customer::where('email', $request->input('email'))->get();
+        }else if(isset($request->mobile)){
+            $data=  Customer::where('mobile', $request->input('mobile'))->get();
+        }else{
+            $data=  Customer::get();
+        }
+
 
 
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
@@ -168,10 +187,32 @@ class CustomerController extends Controller
     public function print_Invoice_pdf(Request $request)
     {
 
+        if(isset($request->full_name) && isset($request->email)&& isset($request->mobile)) {
+            $data = Customer::where('full_name', $request->input('full_name'))
+                ->where('email', $request->input('email'))
+                ->where('mobile', $request->input('mobile'))->get();
+        }else  if(isset($request->full_name) && isset($request->email)){
+            $data = Customer::where('full_name', $request->input('full_name'))
+                ->where('email', $request->input('email'))
+              ->get();
+        } else if (isset($request->full_name) && isset($request->mobile)){
+            $data = Customer::where('full_name', $request->input('full_name'))
+                ->where('mobile', $request->input('mobile'))->get();
+        }else if(isset($request->email)&& isset($request->mobile)){
+          $data=  Customer::where('email', $request->input('email'))
+                ->where('mobile', $request->input('mobile'))->get();
+        }   else if (isset($request->full_name)) {
+            $data = Customer::where('full_name', $request->input('full_name'))->get();
+        }
+        else if (isset($request->email)){
+            $data=  Customer::where('email', $request->input('email'))->get();
+        }else if(isset($request->mobile)){
+            $data=  Customer::where('mobile', $request->input('mobile'))->get();
+        }else{
+            $data=  Customer::get();
 
-        $data = Customer::orwhere('full_name', $request->input('full_name'))
-            ->orwhere('email', $request->input('email'))
-            ->orwhere('mobile', $request->input('mobile'))->get();
+        }
+
 
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A5-L']);
         $mpdf->autoScriptToLang = true;
